@@ -553,7 +553,17 @@ function endTest() {
     .catch(() => {
       document.getElementById('visit-count').innerText = '1';
     });
-</script>
+</script><!-- Rating System -->
+<div style="text-align: center; margin-top: 10px; font-family: sans-serif;">
+  <p style="color: #ffffff; margin-bottom: 5px; font-size: 14px;">Rate this game:</p>
+  <button onclick="rate(1)" style="background: none; border: none; font-size: 20px; cursor: pointer;">⭐</button>
+  <button onclick="rate(2)" style="background: none; border: none; font-size: 20px; cursor: pointer;">⭐</button>
+  <button onclick="rate(3)" style="background: none; border: none; font-size: 20px; cursor: pointer;">⭐</button>
+  <button onclick="rate(4)" style="background: none; border: none; font-size: 20px; cursor: pointer;">⭐</button>
+  <button onclick="rate(5)" style="background: none; border: none; font-size: 20px; cursor: pointer;">⭐</button>
+  <div id="rating-status" style="font-size: 12px; color: #a0aec0; margin-top: 4px;"></div>
+</div>
+    
     
 </body>
   </html>
