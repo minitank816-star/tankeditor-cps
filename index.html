@@ -1,569 +1,519 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>TankEditor CPS Tester</title>
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&display=swap');
-
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
-
-body {
-    margin: 0;
-    min-height: 100vh;
-    background:
-        radial-gradient(circle at top, #172554 0%, #080b16 45%, #03040a 100%);
-    color: white;
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-}
-
-.app {
-    width: 100%;
-    max-width: 430px;
-}
-
-/* HEADER */
-
-.logo {
-    text-align: center;
-    font-family: Orbitron, sans-serif;
-    font-size: 25px;
-    font-weight: 800;
-    letter-spacing: 3px;
-    margin-top: 15px;
-    color: #60a5fa;
-}
-
-.subtitle {
-    text-align: center;
-    color: #64748b;
-    font-size: 11px;
-    letter-spacing: 3px;
-    margin: 7px 0 25px;
-}
-
-/* MAIN PANEL */
-
-.panel {
-    background: rgba(15, 23, 42, 0.88);
-    border: 1px solid #1e3a5f;
-    border-radius: 22px;
-    padding: 20px;
-    box-shadow: 0 0 40px rgba(37, 99, 235, 0.12);
-}
-
-/* STATS */
-
-.stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.stat {
-    background: #080f1d;
-    border: 1px solid #1e293b;
-    border-radius: 14px;
-    padding: 15px;
-    text-align: center;
-}
-
-.stat-label {
-    color: #64748b;
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    margin-bottom: 8px;
-}
-
-.stat-value {
-    font-family: Orbitron, sans-serif;
-    font-size: 23px;
-    font-weight: 700;
-    color: #e0f2fe;
-}
-
-#timer {
-    color: #fbbf24;
-}
-
-/* CLICK AREA */
-
-.click-area {
-    height: 260px;
-    border-radius: 20px;
-    border: 2px solid #2563eb;
-    background: linear-gradient(145deg, #172554, #0f172a);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    cursor: pointer;
-    user-select: none;
-    touch-action: manipulation;
-    transition: transform 0.08s, background 0.08s;
-    box-shadow:
-        inset 0 0 30px rgba(37, 99, 235, 0.08),
-        0 0 20px rgba(37, 99, 235, 0.08);
-}
-
-.click-area:active {
-    transform: scale(0.96);
-    background: #1d4ed8;
-}
-
-.click-area.disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-}
-
-.click-text {
-    font-family: Orbitron, sans-serif;
-    font-size: 25px;
-    font-weight: 800;
-    letter-spacing: 2px;
-}
-
-.click-hint {
-    color: #94a3b8;
-    font-size: 12px;
-    margin-top: 10px;
-}
-
-/* BUTTONS */
-
-.controls {
-    margin-top: 18px;
-}
-
-button {
-    width: 100%;
-    padding: 16px;
-    border: none;
-    border-radius: 12px;
-    background: #2563eb;
-    color: white;
-    font-family: Orbitron, sans-serif;
-    font-weight: 700;
-    letter-spacing: 1px;
-    cursor: pointer;
-    touch-action: manipulation;
-}
-
-button:active {
-    transform: scale(0.98);
-}
-
-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* RESULTS */
-
-.result {
-    text-align: center;
-    margin-top: 20px;
-    color: #94a3b8;
-    font-size: 13px;
-}
-
-.result strong {
-    color: #60a5fa;
-    font-size: 20px;
-}
-
-/* YOUTUBE */
-
-.youtube-button {
-    display: block;
-    width: 100%;
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 12px;
-    background: #dc2626;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    font-family: Orbitron, sans-serif;
-    font-weight: 700;
-    letter-spacing: 1px;
-    transition: 0.15s;
-}
-
-.youtube-button:active {
-    transform: scale(0.97);
-    background: #b91c1c;
-}
-
-/* FOOTER */
-
-.footer {
-    text-align: center;
-    color: #475569;
-    font-size: 10px;
-    margin-top: 22px;
-    letter-spacing: 1.5px;
-}
-
-.footer span {
-    color: #60a5fa;
-}
-</style>
-</head>
-
-<body>
-
-<div class="app">
-
-    <!-- APP BRANDING -->
-
-    <div class="logo">⚡ TANKEDITOR CPS</div>
-
-    <div class="subtitle">
-        CLICK SPEED TEST
-    </div>
-
-
-    <div class="panel">
-
-        <!-- STATS -->
-
-        <div class="stats">
-
-            <div class="stat">
-                <div class="stat-label">
-                    TIME LEFT
-                </div>
-
-                <div class="stat-value" id="timer">
-                    10.0
-                </div>
-            </div>
-
-
-            <div class="stat">
-                <div class="stat-label">
-                    CURRENT CPS
-                </div>
-
-                <div class="stat-value" id="cps">
-                    0.00
-                </div>
-            </div>
-
-        </div>
-
-
-        <!-- CLICK AREA -->
-
-        <div
-            class="click-area disabled"
-            id="clickArea"
-        >
-
-            <div>
-
-                <div
-                    class="click-text"
-                    id="clickText"
-                >
-                    PRESS START
-                </div>
-
-                <div class="click-hint">
-                    Tap as fast as you can
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- START BUTTON -->
-
-        <div class="controls">
-
-            <button id="startButton">
-                START TEST
-            </button>
-
-        </div>
-
-
-        <!-- RESULTS -->
-
-        <div class="result">
-
-            Total Clicks:
-            <strong id="clicks">
-                0
-            </strong>
-
-            <br><br>
-
-            Best CPS:
-            <strong id="best">
-                0.00
-            </strong>
-
-        </div>
-
-
-        <!-- YOUTUBE BUTTON -->
-
-        <a
-            class="youtube-button"
-            href="https://youtube.com/@tankeditor1"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            ▶ VISIT TANKEDITOR
-        </a>
-
-    </div>
-
-
-    <!-- FOOTER -->
-
-    <div class="footer">
-        MADE BY <span>TANKEDITOR</span>
-    </div>
-
-</div>
-
-
-<script>
-
-/* GAME VARIABLES */
-
-let clicks = 0;
-let timeLeft = 10;
-let running = false;
-let startTime;
-let timer;
-
-
-/* LOAD BEST SCORE */
-
-let best = localStorage.getItem("tankEditorBestCPS") || 0;
-
-
-/* GET HTML ELEMENTS */
-
-const clickArea =
-    document.getElementById("clickArea");
-
-const clickText =
-    document.getElementById("clickText");
-
-const startButton =
-    document.getElementById("startButton");
-
-const timerText =
-    document.getElementById("timer");
-
-const cpsText =
-    document.getElementById("cps");
-
-const clicksText =
-    document.getElementById("clicks");
-
-const bestText =
-    document.getElementById("best");
-
-
-/* SHOW SAVED BEST */
-
-bestText.innerText =
-    Number(best).toFixed(2);
-
-
-/* START GAME */
-
-startButton.onclick = function() {
-
-    clicks = 0;
-
-    timeLeft = 10;
-
-    running = true;
-
-    startTime = Date.now();
-
-
-    clickArea.classList.remove("disabled");
-
-    clickText.innerText = "CLICK!";
-
-    startButton.disabled = true;
-
-
-    clicksText.innerText = "0";
-
-    cpsText.innerText = "0.00";
-
-    timerText.innerText = "10.0";
-
-
-    timer = setInterval(function() {
-
-        let elapsed =
-            (Date.now() - startTime) / 1000;
-
-
-        timeLeft =
-            Math.max(0, 10 - elapsed);
-
-
-        timerText.innerText =
-            timeLeft.toFixed(1);
-
-
-        let cps =
-            elapsed > 0
-            ? clicks / elapsed
-            : 0;
-
-
-        cpsText.innerText =
-            cps.toFixed(2);
-
-
-        if (timeLeft <= 0) {
-
-            endTest();
-
-        }
-
-    }, 50);
-
-};
-
-
-/* CLICK DETECTION */
-
-clickArea.onclick = function() {
-
-    if (!running) return;
-
-
-    clicks++;
-
-
-    clicksText.innerText =
-        clicks;
-
-
-    let elapsed =
-        (Date.now() - startTime) / 1000;
-
-
-    let cps =
-        elapsed > 0
-        ? clicks / elapsed
-        : 0;
-
-
-    cpsText.innerText =
-        cps.toFixed(2);
-
-};
-
-
-/* END TEST */
-
-function endTest() {
-
-    clearInterval(timer);
-
-
-    running = false;
-
-
-    clickArea.classList.add("disabled");
-
-    clickText.innerText =
-        "TEST FINISHED";
-
-
-    startButton.disabled =
-        false;
-
-
-    let finalCPS =
-        clicks / 10;
-
-
-    cpsText.innerText =
-        finalCPS.toFixed(2);
-
-
-    /* NEW BEST */
-
-    if (finalCPS > best) {
-
-        best = finalCPS;
-
-
-        localStorage.setItem(
-            "tankEditorBestCPS",
-            best
-        );
-
-
-        bestText.innerText =
-            Number(best).toFixed(2);
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090d16">
+  <title>TankEditor CPS - Click Speed Test</title>  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
+    body {
+      background: #090d16;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
 
-    setTimeout(function() {
+    .app-container {
+      width: 100%;
+      max-width: 420px;
+      aspect-ratio: 1 / 1;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(96, 165, 250, 0.25);
+      border-radius: 20px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
 
-        alert(
-            "TEST COMPLETE!\n\n" +
-            "Clicks: " + clicks +
-            "\nCPS: " + finalCPS.toFixed(2)
+    .header {
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #60a5fa;
+    }
+
+    .subtitle {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .stat-box {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 9px;
+      letter-spacing: 1px;
+      color: #64748b;
+    }
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-top: 2px;
+    }
+
+    .click-zone {
+      flex: 1;
+      margin: 10px 0;
+      background: linear-gradient(
+        135deg,
+        rgba(30, 58, 138, 0.3),
+        rgba(15, 23, 42, 0.5)
+      );
+      border: 2px solid #2563eb;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.05s ease, border-color 0.2s;
+      touch-action: manipulation;
+    }
+
+    .click-zone:active {
+      transform: scale(0.98);
+      border-color: #60a5fa;
+    }
+
+    .click-text {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .click-subtext {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    .footer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    .btn-action {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 11px;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .btn-action:active {
+      transform: scale(0.96);
+    }
+
+    .rating-card {
+      width: 100%;
+      max-width: 420px;
+      margin-top: 14px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .rating-title {
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+
+    .star-btn {
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      transition: transform 0.15s;
+      padding: 2px;
+    }
+
+    .star-btn:hover {
+      transform: scale(1.25);
+    }
+
+    .rating-status {
+      font-size: 12px;
+      color: #38bdf8;
+      margin-top: 6px;
+      min-height: 16px;
+    }
+
+    .feedback-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 20px;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
+      z-index: 10;
+    }
+
+    .feedback-box {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid #60a5fa;
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .continue-btn {
+      margin-top: 14px;
+      background: #60a5fa;
+      border: none;
+      color: #000;
+      padding: 6px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    @media (max-width: 400px) {
+      .app-container {
+        padding: 15px;
+      }
+
+      .stat-label {
+        font-size: 8px;
+      }
+
+      .stat-value {
+        font-size: 16px;
+      }
+
+      .click-text {
+        font-size: 18px;
+      }
+    }
+  </style></head><body>  <div class="app-container"><div class="header">
+  <div class="logo">⚡ TANKEDITOR CPS</div>
+  <div class="subtitle">CLICK SPEED TEST</div>
+</div>
+
+<div class="stats">
+  <div class="stat-box">
+    <div class="stat-label">TIME LEFT</div>
+    <div class="stat-value" id="timer">10.0</div>
+  </div>
+
+  <div class="stat-box">
+    <div class="stat-label">CURRENT CPS</div>
+    <div class="stat-value" id="cps-val">0.00</div>
+  </div>
+
+  <div class="stat-box">
+    <div class="stat-label">BEST CPS</div>
+    <div class="stat-value" id="best-val">0.00</div>
+  </div>
+</div>
+
+<div class="click-zone" id="click-area">
+  <div class="click-text" id="click-title">PRESS START</div>
+  <div class="click-subtext" id="click-sub">
+    Tap as fast as you can
+  </div>
+</div>
+
+<div class="footer-bar">
+  <div>
+    Visits:
+    <span id="visit-count" style="color: #60a5fa;">...</span>
+  </div>
+
+  <button class="btn-action" id="start-btn">
+    START TEST
+  </button>
+</div>
+
+<div class="feedback-overlay" id="feedback-popup">
+  <div class="feedback-box">
+    <div style="font-size: 32px; margin-bottom: 6px;">🎉</div>
+
+    <div style="font-size: 16px; font-weight: 700; color: #ffffff;">
+      Thanks For Your Feedback!
+    </div>
+
+    <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">
+      We appreciate your rating!
+    </div>
+
+    <button class="continue-btn" id="close-feedback">
+      Continue
+    </button>
+  </div>
+</div>
+
+  </div>  <div class="rating-card">
+    <div class="rating-title">
+      RATE EXPERIENCE
+    </div><div>
+  <button class="star-btn" data-rating="1">⭐</button>
+  <button class="star-btn" data-rating="2">⭐</button>
+  <button class="star-btn" data-rating="3">⭐</button>
+  <button class="star-btn" data-rating="4">⭐</button>
+  <button class="star-btn" data-rating="5">⭐</button>
+</div>
+
+<div id="rating-status" class="rating-status"></div>
+
+  </div>  <script>
+    "use strict";
+
+    // =========================
+    // GAME VARIABLES
+    // =========================
+
+    const TEST_DURATION = 10;
+
+    let clicks = 0;
+    let startTime = 0;
+    let timerId = null;
+    let isRunning = false;
+
+    let bestCPS =
+      parseFloat(localStorage.getItem("tankEditorBestCPS")) || 0;
+
+    // =========================
+    // ELEMENTS
+    // =========================
+
+    const clickArea = document.getElementById("click-area");
+    const startBtn = document.getElementById("start-btn");
+    const timerDisplay = document.getElementById("timer");
+    const cpsDisplay = document.getElementById("cps-val");
+    const bestDisplay = document.getElementById("best-val");
+    const titleDisplay = document.getElementById("click-title");
+    const subDisplay = document.getElementById("click-sub");
+    const visitCount = document.getElementById("visit-count");
+    const feedbackPopup = document.getElementById("feedback-popup");
+    const ratingStatus = document.getElementById("rating-status");
+    const closeFeedbackBtn =
+      document.getElementById("close-feedback");
+
+    // =========================
+    // INITIAL DISPLAY
+    // =========================
+
+    bestDisplay.textContent = bestCPS.toFixed(2);
+
+    // =========================
+    // START TEST
+    // =========================
+
+    function startTest() {
+      clearInterval(timerId);
+
+      clicks = 0;
+      startTime = performance.now();
+      isRunning = true;
+
+      timerDisplay.textContent = TEST_DURATION.toFixed(1);
+      cpsDisplay.textContent = "0.00";
+
+      titleDisplay.textContent = "CLICK HERE!";
+      subDisplay.textContent = "Keep tapping!";
+
+      startBtn.textContent = "RESTART";
+
+      timerId = setInterval(updateTimer, 50);
+    }
+
+    // =========================
+    // TIMER
+    // =========================
+
+    function updateTimer() {
+      if (!isRunning) return;
+
+      const elapsed = (performance.now() - startTime) / 1000;
+      const remaining = Math.max(0, TEST_DURATION - elapsed);
+
+      timerDisplay.textContent = remaining.toFixed(1);
+
+      if (remaining <= 0) {
+        endTest();
+      }
+    }
+
+    // =========================
+    // CLICK HANDLER
+    // =========================
+
+    clickArea.addEventListener("click", function () {
+      if (!isRunning) return;
+
+      clicks++;
+
+      const elapsed =
+        (performance.now() - startTime) / 1000;
+
+      const currentCPS =
+        clicks / Math.max(elapsed, 0.001);
+
+      cpsDisplay.textContent = currentCPS.toFixed(2);
+    });
+
+    // =========================
+    // END TEST
+    // =========================
+
+    function endTest() {
+      if (!isRunning) return;
+
+      isRunning = false;
+      clearInterval(timerId);
+      timerId = null;
+
+      const finalCPS = clicks / TEST_DURATION;
+
+      timerDisplay.textContent = "0.0";
+      cpsDisplay.textContent = finalCPS.toFixed(2);
+
+      titleDisplay.textContent = "TEST COMPLETE";
+      subDisplay.textContent =
+        "Final CPS: " + finalCPS.toFixed(2);
+
+      startBtn.textContent = "START TEST";
+
+      if (finalCPS > bestCPS) {
+        bestCPS = finalCPS;
+
+        localStorage.setItem(
+          "tankEditorBestCPS",
+          bestCPS.toString()
         );
 
-    }, 100);
+        bestDisplay.textContent = bestCPS.toFixed(2);
+      }
+    }
 
-}
+    // =========================
+    // START BUTTON
+    // =========================
 
-script>
-<div style="text-align: center; color: #60a5fa; margin: 15px 0; font-family: sans-serif;">
-  Total Visits: <span id="visit-count">Loading...</span>
-</div>
+    startBtn.addEventListener("click", startTest);
 
-<script>
-  fetch('https://api.counterapi.dev/v1/tankeditor-cps/visits/up')
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById('visit-count').innerText = data.count;
-    })
-    .catch(() => {
-      document.getElementById('visit-count').innerText = '1';
+    // =========================
+    // VISITOR COUNTER
+    // =========================
+
+    fetch("https://api.counterapi.dev/v1/tankeditor-cps/visits/up")
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error("Counter API failed");
+        }
+
+        return response.json();
+      })
+      .then(function (data) {
+        visitCount.textContent =
+          data && data.count != null
+            ? data.count
+            : "1";
+      })
+      .catch(function () {
+        visitCount.textContent = "1";
+      });
+
+    // =========================
+    // RATING SYSTEM
+    // =========================
+
+    function rateGame(stars) {
+      localStorage.setItem(
+        "userGameRating",
+        stars.toString()
+      );
+
+      ratingStatus.textContent =
+        "You rated: " + stars + " ⭐";
+
+      if (stars >= 3) {
+        feedbackPopup.style.display = "flex";
+      }
+    }
+
+    document.querySelectorAll(".star-btn").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const rating = Number(
+          button.dataset.rating
+        );
+
+        rateGame(rating);
+      });
     });
-</script><!-- Rating System -->
-<div style="text-align: center; margin-top: 10px; font-family: sans-serif;">
-  <p style="color: #ffffff; margin-bottom: </5px; font-size: 14px;">Rate this game:</p>
-  <button onclick="rate(1)" style="background: none; border: none; font-size: 20px; cursor: pointer;">⭐</button>
-  <button onclick="rate(2)" style="background: none; border: none; font-size: 20px; cursor: pointer;">⭐</button>
-  <button onclick="rate(3)" style="background: none; border: none; font-size: 20px; cursor: pointer;">⭐</button>
-  <button onclick="rate(4)" style="background: none; border: none; font-size: 20px; cursor: pointer;">⭐</button>
-  <button onclick="rate(5)" style="background: none; border: none; font-size: 20px; cursor: pointer;">⭐</button>
-  <div id="rating-status" style="font-size: 12px; color: #a0aec0; margin-top: 4px;"></div>
-</div>
-    
-    
-</body>
-  </html>
+
+    // =========================
+    // CLOSE FEEDBACK
+    // =========================
+
+    closeFeedbackBtn.addEventListener("click", function () {
+      feedbackPopup.style.display = "none";
+    });
+
+    // =========================
+    // LOAD SAVED RATING
+    // =========================
+
+    const savedRating =
+      localStorage.getItem("userGameRating");
+
+    if (savedRating) {
+      ratingStatus.textContent =
+        "You rated: " + savedRating + " ⭐";
+    }
+  </script></body>
+    </html>
