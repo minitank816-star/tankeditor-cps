@@ -540,6 +540,20 @@ function endTest() {
 }
 
 </script>
+<div style="text-align: center; color: #60a5fa; margin: 15px 0; font-family: sans-serif;">
+  Total Visits: <span id="visit-count">Loading...</span>
+</div>
 
+<script>
+  fetch('https://api.counterapi.dev/v1/tankeditor-cps/visits/up')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('visit-count').innerText = data.count;
+    })
+    .catch(() => {
+      document.getElementById('visit-count').innerText = '1';
+    });
+</script>
+    
 </body>
   </html>
