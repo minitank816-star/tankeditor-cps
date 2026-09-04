@@ -3,6 +3,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#090d16">
+  <meta name="description" content="TankEditor CPS - Test your clicking speed, beat your record, and reach Diamond or Master rank.">
   <title>TankEditor CPS - Click Speed Test</title>  <style>
     * {
       box-sizing: border-box;
@@ -12,11 +13,17 @@
       -webkit-user-select: none;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      background: #090d16;
-      color: #ffffff;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(37, 99, 235, 0.15), transparent 35%),
+        #090d16;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Helvetica, Arial, sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -25,29 +32,52 @@
       padding: 16px;
     }
 
+    /* =========================
+       MAIN GAME
+    ========================= */
+
     .app-container {
       width: 100%;
       max-width: 420px;
-      aspect-ratio: 1 / 1;
-      background: rgba(15, 23, 42, 0.8);
+      background: rgba(15, 23, 42, 0.88);
       border: 1px solid rgba(96, 165, 250, 0.25);
       border-radius: 20px;
       padding: 20px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(37, 99, 235, 0.06);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       position: relative;
       overflow: hidden;
     }
 
+    .app-container::before {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      background: rgba(37, 99, 235, 0.08);
+      border-radius: 50%;
+      top: -90px;
+      right: -70px;
+      pointer-events: none;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
     .header {
       text-align: center;
+      position: relative;
+      z-index: 1;
     }
 
     .logo {
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 800;
       letter-spacing: 1px;
       color: #60a5fa;
@@ -60,42 +90,102 @@
       margin-top: 2px;
     }
 
+    /* =========================
+       TIMER SELECTOR
+    ========================= */
+
+    .timer-section {
+      margin-top: 15px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 9px;
+      letter-spacing: 1px;
+      color: #64748b;
+      margin-bottom: 7px;
+    }
+
+    .timer-options {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+    }
+
+    .timer-btn {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.035);
+      color: #94a3b8;
+      border-radius: 7px;
+      padding: 7px 2px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.15s;
+      touch-action: manipulation;
+    }
+
+    .timer-btn:hover {
+      border-color: #3b82f6;
+      color: #fff;
+    }
+
+    .timer-btn.active {
+      background: #2563eb;
+      border-color: #60a5fa;
+      color: #fff;
+    }
+
+    /* =========================
+       STATS
+    ========================= */
+
     .stats {
       display: flex;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
+      margin-top: 12px;
+      position: relative;
+      z-index: 1;
     }
 
     .stat-box {
       flex: 1;
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(255, 255, 255, 0.035);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 10px;
-      padding: 8px;
+      padding: 8px 4px;
       text-align: center;
     }
 
     .stat-label {
-      font-size: 9px;
-      letter-spacing: 1px;
+      font-size: 8px;
+      letter-spacing: 0.8px;
       color: #64748b;
     }
 
     .stat-value {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
       color: #38bdf8;
       margin-top: 2px;
     }
 
+    /* =========================
+       CLICK AREA
+    ========================= */
+
     .click-zone {
-      flex: 1;
-      margin: 10px 0;
-      background: linear-gradient(
-        135deg,
-        rgba(30, 58, 138, 0.3),
-        rgba(15, 23, 42, 0.5)
-      );
+      min-height: 240px;
+      margin: 12px 0;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(30, 58, 138, 0.35),
+          rgba(15, 23, 42, 0.55)
+        );
       border: 2px solid #2563eb;
       border-radius: 14px;
       display: flex;
@@ -103,8 +193,19 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: transform 0.05s ease, border-color 0.2s;
+      transition:
+        transform 0.05s ease,
+        border-color 0.2s,
+        box-shadow 0.2s;
       touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .click-zone:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 0 25px rgba(37, 99, 235, 0.15);
     }
 
     .click-zone:active {
@@ -113,19 +214,26 @@
     }
 
     .click-text {
-      font-size: 20px;
+      font-size: 21px;
       font-weight: 800;
       letter-spacing: 1px;
-      color: #ffffff;
       text-align: center;
+      position: relative;
+      z-index: 1;
     }
 
     .click-subtext {
       font-size: 11px;
       color: #94a3b8;
-      margin-top: 4px;
+      margin-top: 5px;
       text-align: center;
+      position: relative;
+      z-index: 1;
     }
+
+    /* =========================
+       FOOTER
+    ========================= */
 
     .footer-bar {
       display: flex;
@@ -133,34 +241,123 @@
       justify-content: space-between;
       font-size: 11px;
       color: #64748b;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
     }
 
     .btn-action {
       background: #2563eb;
-      color: #ffffff;
+      color: #fff;
       border: none;
-      padding: 8px 14px;
+      padding: 9px 15px;
       border-radius: 8px;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 11px;
       cursor: pointer;
       touch-action: manipulation;
+      transition: 0.15s;
+    }
+
+    .btn-action:hover {
+      background: #3b82f6;
     }
 
     .btn-action:active {
-      transform: scale(0.96);
+      transform: scale(0.95);
     }
 
+    /* =========================
+       RESULT
+    ========================= */
+
+    .result-card {
+      display: none;
+      margin-top: 12px;
+      padding: 13px;
+      border-radius: 12px;
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .result-title {
+      font-size: 9px;
+      letter-spacing: 1px;
+      color: #64748b;
+    }
+
+    .result-cps {
+      font-size: 28px;
+      font-weight: 900;
+      color: #38bdf8;
+      margin-top: 2px;
+    }
+
+    .result-rank {
+      font-size: 17px;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .result-clicks {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    /* =========================
+       YOUTUBE
+    ========================= */
+
+    .youtube-card,
     .rating-card {
       width: 100%;
       max-width: 420px;
       margin-top: 14px;
-      background: rgba(15, 23, 42, 0.6);
+      background: rgba(15, 23, 42, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 16px;
       padding: 14px;
       text-align: center;
     }
+
+    .youtube-text {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-bottom: 9px;
+    }
+
+    .youtube-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      width: 100%;
+      text-decoration: none;
+      background: #ff0000;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .youtube-btn:hover {
+      opacity: 0.9;
+    }
+
+    .youtube-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* =========================
+       RATING
+    ========================= */
 
     .rating-title {
       font-size: 11px;
@@ -174,8 +371,9 @@
       border: none;
       font-size: 22px;
       cursor: pointer;
-      transition: transform 0.15s;
       padding: 2px;
+      transition: transform 0.15s;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .star-btn:hover {
@@ -189,18 +387,21 @@
       min-height: 16px;
     }
 
+    /* =========================
+       FEEDBACK POPUP
+    ========================= */
+
     .feedback-overlay {
       display: none;
       position: absolute;
       inset: 0;
-      background: rgba(15, 23, 42, 0.95);
+      background: rgba(15, 23, 42, 0.97);
       border-radius: 20px;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
       text-align: center;
       padding: 20px;
-      z-index: 10;
+      z-index: 20;
     }
 
     .feedback-box {
@@ -208,6 +409,19 @@
       border: 1px solid #60a5fa;
       border-radius: 16px;
       padding: 20px;
+      max-width: 280px;
+      animation: popIn 0.25s ease;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.85);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     .continue-btn {
@@ -215,35 +429,78 @@
       background: #60a5fa;
       border: none;
       color: #000;
-      padding: 6px 16px;
+      padding: 7px 16px;
       border-radius: 8px;
       font-weight: 700;
       cursor: pointer;
     }
 
+    /* =========================
+       MOBILE
+    ========================= */
+
     @media (max-width: 400px) {
+      body {
+        padding: 10px;
+      }
+
       .app-container {
         padding: 15px;
       }
 
+      .timer-options {
+        gap: 3px;
+      }
+
+      .timer-btn {
+        font-size: 9px;
+        padding: 7px 1px;
+      }
+
+      .click-zone {
+        min-height: 210px;
+      }
+
       .stat-label {
-        font-size: 8px;
+        font-size: 7px;
       }
 
       .stat-value {
-        font-size: 16px;
-      }
-
-      .click-text {
-        font-size: 18px;
+        font-size: 15px;
       }
     }
-  </style></head><body>  <div class="app-container"><div class="header">
+  </style></head><body>  <!-- =========================
+       GAME
+  ========================= -->  <div class="app-container"><div class="header">
   <div class="logo">⚡ TANKEDITOR CPS</div>
   <div class="subtitle">CLICK SPEED TEST</div>
 </div>
 
+<!-- TIMER SELECTOR -->
+
+<div class="timer-section">
+
+  <div class="section-title">
+    SELECT TEST TIME
+  </div>
+
+  <div class="timer-options">
+
+    <button class="timer-btn" data-time="1">1s</button>
+    <button class="timer-btn" data-time="5">5s</button>
+    <button class="timer-btn active" data-time="10">10s</button>
+    <button class="timer-btn" data-time="15">15s</button>
+    <button class="timer-btn" data-time="30">30s</button>
+    <button class="timer-btn" data-time="60">60s</button>
+
+  </div>
+
+</div>
+
+<!-- STATS -->
+
 <div class="stats">
+
   <div class="stat-box">
     <div class="stat-label">TIME LEFT</div>
     <div class="stat-value" id="timer">10.0</div>
@@ -258,53 +515,117 @@
     <div class="stat-label">BEST CPS</div>
     <div class="stat-value" id="best-val">0.00</div>
   </div>
+
 </div>
 
+<!-- CLICK AREA -->
+
 <div class="click-zone" id="click-area">
-  <div class="click-text" id="click-title">PRESS START</div>
+
+  <div class="click-text" id="click-title">
+    PRESS START
+  </div>
+
   <div class="click-subtext" id="click-sub">
     Tap as fast as you can
   </div>
+
 </div>
 
+<!-- FOOTER -->
+
 <div class="footer-bar">
+
   <div>
     Visits:
-    <span id="visit-count" style="color: #60a5fa;">...</span>
+    <span id="visit-count" style="color:#60a5fa;">
+      ...
+    </span>
   </div>
 
   <button class="btn-action" id="start-btn">
     START TEST
   </button>
+
 </div>
 
-<div class="feedback-overlay" id="feedback-popup">
-  <div class="feedback-box">
-    <div style="font-size: 32px; margin-bottom: 6px;">🎉</div>
+<!-- RESULT -->
 
-    <div style="font-size: 16px; font-weight: 700; color: #ffffff;">
+<div class="result-card" id="result-card">
+
+  <div class="result-title">
+    FINAL SCORE
+  </div>
+
+  <div class="result-cps" id="result-cps">
+    0.00 CPS
+  </div>
+
+  <div class="result-rank" id="result-rank">
+    🥉 Bronze
+  </div>
+
+  <div class="result-clicks" id="result-clicks">
+    0 clicks
+  </div>
+
+</div>
+
+<!-- FEEDBACK POPUP -->
+
+<div class="feedback-overlay" id="feedback-popup">
+
+  <div class="feedback-box">
+
+    <div style="font-size:32px;margin-bottom:6px;">
+      🎉
+    </div>
+
+    <div style="font-size:16px;font-weight:700;">
       Thanks For Your Feedback!
     </div>
 
-    <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">
+    <div style="font-size:12px;color:#94a3b8;margin-top:4px;">
       We appreciate your rating!
     </div>
 
     <button class="continue-btn" id="close-feedback">
       Continue
     </button>
+
   </div>
+
 </div>
 
-  </div>  <div class="rating-card">
-    <div class="rating-title">
-      RATE EXPERIENCE
-    </div><div>
+  </div>  <!-- =========================
+       YOUTUBE
+  ========================= -->  <div class="youtube-card"><div class="youtube-text">
+  Enjoying TankEditor CPS?
+</div>
+
+<a
+  class="youtube-btn"
+  href="https://youtube.com/@tankeditor1"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  ▶ Visit TankEditor on YouTube
+</a>
+
+  </div>  <!-- =========================
+       RATING
+  ========================= -->  <div class="rating-card"><div class="rating-title">
+  RATE EXPERIENCE
+</div>
+
+<div>
+
   <button class="star-btn" data-rating="1">⭐</button>
   <button class="star-btn" data-rating="2">⭐</button>
   <button class="star-btn" data-rating="3">⭐</button>
   <button class="star-btn" data-rating="4">⭐</button>
   <button class="star-btn" data-rating="5">⭐</button>
+
 </div>
 
 <div id="rating-status" class="rating-status"></div>
@@ -312,11 +633,11 @@
   </div>  <script>
     "use strict";
 
-    // =========================
-    // GAME VARIABLES
-    // =========================
+    /* =========================
+       SETTINGS
+    ========================= */
 
-    const TEST_DURATION = 10;
+    let testDuration = 10;
 
     let clicks = 0;
     let startTime = 0;
@@ -324,111 +645,285 @@
     let isRunning = false;
 
     let bestCPS =
-      parseFloat(localStorage.getItem("tankEditorBestCPS")) || 0;
+      parseFloat(
+        localStorage.getItem("tankEditorBestCPS")
+      ) || 0;
 
-    // =========================
-    // ELEMENTS
-    // =========================
+    /* =========================
+       ELEMENTS
+    ========================= */
 
-    const clickArea = document.getElementById("click-area");
-    const startBtn = document.getElementById("start-btn");
-    const timerDisplay = document.getElementById("timer");
-    const cpsDisplay = document.getElementById("cps-val");
-    const bestDisplay = document.getElementById("best-val");
-    const titleDisplay = document.getElementById("click-title");
-    const subDisplay = document.getElementById("click-sub");
-    const visitCount = document.getElementById("visit-count");
-    const feedbackPopup = document.getElementById("feedback-popup");
-    const ratingStatus = document.getElementById("rating-status");
-    const closeFeedbackBtn =
+    const clickArea =
+      document.getElementById("click-area");
+
+    const startBtn =
+      document.getElementById("start-btn");
+
+    const timerDisplay =
+      document.getElementById("timer");
+
+    const cpsDisplay =
+      document.getElementById("cps-val");
+
+    const bestDisplay =
+      document.getElementById("best-val");
+
+    const titleDisplay =
+      document.getElementById("click-title");
+
+    const subDisplay =
+      document.getElementById("click-sub");
+
+    const visitCount =
+      document.getElementById("visit-count");
+
+    const resultCard =
+      document.getElementById("result-card");
+
+    const resultCPS =
+      document.getElementById("result-cps");
+
+    const resultRank =
+      document.getElementById("result-rank");
+
+    const resultClicks =
+      document.getElementById("result-clicks");
+
+    const feedbackPopup =
+      document.getElementById("feedback-popup");
+
+    const closeFeedback =
       document.getElementById("close-feedback");
 
-    // =========================
-    // INITIAL DISPLAY
-    // =========================
+    const ratingStatus =
+      document.getElementById("rating-status");
 
-    bestDisplay.textContent = bestCPS.toFixed(2);
+    bestDisplay.textContent =
+      bestCPS.toFixed(2);
 
-    // =========================
-    // START TEST
-    // =========================
+    /* =========================
+       RANK SYSTEM
+    ========================= */
+
+    function getRank(cps) {
+
+      if (cps >= 16) {
+        return {
+          name: "👑 Master",
+          class: "master"
+        };
+      }
+
+      if (cps >= 12) {
+        return {
+          name: "💎 Diamond",
+          class: "diamond"
+        };
+      }
+
+      if (cps >= 8) {
+        return {
+          name: "🥇 Gold",
+          class: "gold"
+        };
+      }
+
+      if (cps >= 5) {
+        return {
+          name: "🥈 Silver",
+          class: "silver"
+        };
+      }
+
+      return {
+        name: "🥉 Bronze",
+        class: "bronze"
+      };
+    }
+
+    /* =========================
+       TIMER BUTTONS
+    ========================= */
+
+    document
+      .querySelectorAll(".timer-btn")
+      .forEach(function(button) {
+
+        button.addEventListener(
+          "click",
+          function() {
+
+            if (isRunning) return;
+
+            document
+              .querySelectorAll(".timer-btn")
+              .forEach(function(btn) {
+                btn.classList.remove("active");
+              });
+
+            button.classList.add("active");
+
+            testDuration =
+              Number(button.dataset.time);
+
+            timerDisplay.textContent =
+              testDuration.toFixed(1);
+
+            cpsDisplay.textContent =
+              "0.00";
+
+            titleDisplay.textContent =
+              "PRESS START";
+
+            subDisplay.textContent =
+              "Tap as fast as you can";
+
+            resultCard.style.display =
+              "none";
+          }
+        );
+
+      });
+
+    /* =========================
+       START TEST
+    ========================= */
 
     function startTest() {
+
       clearInterval(timerId);
 
       clicks = 0;
       startTime = performance.now();
       isRunning = true;
 
-      timerDisplay.textContent = TEST_DURATION.toFixed(1);
-      cpsDisplay.textContent = "0.00";
+      resultCard.style.display =
+        "none";
 
-      titleDisplay.textContent = "CLICK HERE!";
-      subDisplay.textContent = "Keep tapping!";
+      timerDisplay.textContent =
+        testDuration.toFixed(1);
 
-      startBtn.textContent = "RESTART";
+      cpsDisplay.textContent =
+        "0.00";
 
-      timerId = setInterval(updateTimer, 50);
+      titleDisplay.textContent =
+        "CLICK HERE!";
+
+      subDisplay.textContent =
+        "Keep tapping!";
+
+      startBtn.textContent =
+        "RESTART";
+
+      timerId =
+        setInterval(updateTimer, 40);
     }
 
-    // =========================
-    // TIMER
-    // =========================
+    /* =========================
+       TIMER
+    ========================= */
 
     function updateTimer() {
+
       if (!isRunning) return;
 
-      const elapsed = (performance.now() - startTime) / 1000;
-      const remaining = Math.max(0, TEST_DURATION - elapsed);
+      const elapsed =
+        (performance.now() - startTime) / 1000;
 
-      timerDisplay.textContent = remaining.toFixed(1);
+      const remaining =
+        Math.max(
+          0,
+          testDuration - elapsed
+        );
+
+      timerDisplay.textContent =
+        remaining.toFixed(1);
 
       if (remaining <= 0) {
         endTest();
       }
     }
 
-    // =========================
-    // CLICK HANDLER
-    // =========================
+    /* =========================
+       CLICK
+    ========================= */
 
-    clickArea.addEventListener("click", function () {
-      if (!isRunning) return;
+    clickArea.addEventListener(
+      "click",
+      function() {
 
-      clicks++;
+        if (!isRunning) return;
 
-      const elapsed =
-        (performance.now() - startTime) / 1000;
+        clicks++;
 
-      const currentCPS =
-        clicks / Math.max(elapsed, 0.001);
+        const elapsed =
+          (performance.now() - startTime) / 1000;
 
-      cpsDisplay.textContent = currentCPS.toFixed(2);
-    });
+        const currentCPS =
+          clicks /
+          Math.max(elapsed, 0.001);
 
-    // =========================
-    // END TEST
-    // =========================
+        cpsDisplay.textContent =
+          currentCPS.toFixed(2);
+      }
+    );
+
+    /* =========================
+       END TEST
+    ========================= */
 
     function endTest() {
+
       if (!isRunning) return;
 
       isRunning = false;
+
       clearInterval(timerId);
       timerId = null;
 
-      const finalCPS = clicks / TEST_DURATION;
+      const finalCPS =
+        clicks / testDuration;
 
-      timerDisplay.textContent = "0.0";
-      cpsDisplay.textContent = finalCPS.toFixed(2);
+      const rank =
+        getRank(finalCPS);
 
-      titleDisplay.textContent = "TEST COMPLETE";
+      timerDisplay.textContent =
+        "0.0";
+
+      cpsDisplay.textContent =
+        finalCPS.toFixed(2);
+
+      titleDisplay.textContent =
+        "TEST COMPLETE";
+
       subDisplay.textContent =
-        "Final CPS: " + finalCPS.toFixed(2);
+        rank.name;
 
-      startBtn.textContent = "START TEST";
+      startBtn.textContent =
+        "START TEST";
+
+      /* RESULT CARD */
+
+      resultCard.style.display =
+        "block";
+
+      resultCPS.textContent =
+        finalCPS.toFixed(2) + " CPS";
+
+      resultRank.textContent =
+        rank.name;
+
+      resultClicks.textContent =
+        clicks +
+        (clicks === 1 ? " click" : " clicks") +
+        " in " +
+        testDuration +
+        " seconds";
+
+      /* BEST CPS */
 
       if (finalCPS > bestCPS) {
+
         bestCPS = finalCPS;
 
         localStorage.setItem(
@@ -436,84 +931,77 @@
           bestCPS.toString()
         );
 
-        bestDisplay.textContent = bestCPS.toFixed(2);
+        bestDisplay.textContent =
+          bestCPS.toFixed(2);
       }
     }
 
-    // =========================
-    // START BUTTON
-    // =========================
+    /* =========================
+       START BUTTON
+    ========================= */
 
-    startBtn.addEventListener("click", startTest);
+    startBtn.addEventListener(
+      "click",
+      startTest
+    );
 
-    // =========================
-    // VISITOR COUNTER
-    // =========================
+    /* =========================
+       VISITOR COUNTER
+    ========================= */
 
-    fetch("https://api.counterapi.dev/v1/tankeditor-cps/visits/up")
-      .then(function (response) {
+    fetch(
+      "https://api.counterapi.dev/v1/tankeditor-cps/visits/up"
+    )
+      .then(function(response) {
+
         if (!response.ok) {
           throw new Error("Counter API failed");
         }
 
         return response.json();
       })
-      .then(function (data) {
-        visitCount.textContent =
-          data && data.count != null
-            ? data.count
-            : "1";
+      .then(function(data) {
+
+        if (data && data.count != null) {
+
+          visitCount.textContent =
+            data.count;
+
+        } else {
+
+          visitCount.textContent =
+            "1";
+        }
       })
-      .catch(function () {
-        visitCount.textContent = "1";
+      .catch(function() {
+
+        visitCount.textContent =
+          "1";
       });
 
-    // =========================
-    // RATING SYSTEM
-    // =========================
+    /* =========================
+       RATING
+    ========================= */
 
     function rateGame(stars) {
+
       localStorage.setItem(
         "userGameRating",
         stars.toString()
       );
 
       ratingStatus.textContent =
-        "You rated: " + stars + " ⭐";
+        "You rated: " +
+        stars +
+        " ⭐";
 
       if (stars >= 3) {
-        feedbackPopup.style.display = "flex";
+
+        feedbackPopup.style.display =
+          "flex";
       }
     }
 
-    document.querySelectorAll(".star-btn").forEach(function (button) {
-      button.addEventListener("click", function () {
-        const rating = Number(
-          button.dataset.rating
-        );
-
-        rateGame(rating);
-      });
-    });
-
-    // =========================
-    // CLOSE FEEDBACK
-    // =========================
-
-    closeFeedbackBtn.addEventListener("click", function () {
-      feedbackPopup.style.display = "none";
-    });
-
-    // =========================
-    // LOAD SAVED RATING
-    // =========================
-
-    const savedRating =
-      localStorage.getItem("userGameRating");
-
-    if (savedRating) {
-      ratingStatus.textContent =
-        "You rated: " + savedRating + " ⭐";
-    }
-  </script></body>
-    </html>
+    document
+      .querySelectorAll(".star-btn")
+      .for
