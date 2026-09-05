@@ -2,1562 +2,376 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>TANKEDITOR: BATTLE LEGENDS V2</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TANKEDITOR: BATTLE LEGENDS</title>
 <style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+  body, html { width: 100%; height: 100%; overflow: hidden; background: #0a0c10; color: #e0e6ed; }
+  
+  /* UI Panels */
+  .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; z-index: 10; background: rgba(10, 12, 16, 0.95); }
+  .screen.active { display: flex; }
+  
+  /* Header Bar */
+  .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: rgba(18, 22, 31, 0.9); border-bottom: 2px solid #2a3447; }
+  .user-stats { display: flex; gap: 20px; font-weight: bold; font-size: 16px; }
+  .stat-item { display: flex; align-items: center; gap: 8px; background: #121824; padding: 6px 14px; border-radius: 20px; border: 1px solid #3b4861; }
+  .stat-item span { color: #f5b041; }
 
-html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:#06090b;
-  color:#fff;
-  font-family:Arial,sans-serif;
-}
+  /* Menus & Layouts */
+  .menu-content { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; padding: 20px; }
+  h1.title { font-size: 2.8rem; text-transform: uppercase; letter-spacing: 3px; color: #4af; text-shadow: 0 0 15px rgba(68,170,255,0.5); text-align: center; margin-bottom: 5px; }
+  .subtitle { font-size: 0.9rem; color: #687a97; letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; }
 
-button{
-  font:inherit;
-  border:0;
-  color:inherit;
-}
+  /* Buttons */
+  .btn { background: linear-gradient(135deg, #1f293d, #121824); color: #fff; border: 1px solid #3b4861; padding: 12px 28px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; min-width: 200px; text-align: center; transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 1px; }
+  .btn:hover { background: linear-gradient(135deg, #2a3854, #1a2233); border-color: #4af; box-shadow: 0 0 10px rgba(68,170,255,0.3); transform: translateY(-2px); }
+  .btn:active { transform: translateY(0); }
+  .btn-primary { background: linear-gradient(135deg, #27ae60, #1e8449); border-color: #2ecc71; }
+  .btn-primary:hover { background: linear-gradient(135deg, #2ecc71, #25a25a); border-color: #58d68d; box-shadow: 0 0 10px rgba(46,204,113,0.4); }
+  .btn-danger { background: linear-gradient(135deg, #c0392b, #922b21); border-color: #e74c3c; }
+  .btn-danger:hover { background: linear-gradient(135deg, #e74c3c, #b03a2e); border-color: #ec7063; box-shadow: 0 0 10px rgba(231,76,60,0.4); }
 
-.screen{
-  position:absolute;
-  inset:0;
-  display:none;
-}
+  /* Garage Screen Layout */
+  .garage-container { display: flex; flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px; gap: 20px; }
+  .tank-preview { flex: 1; background: #121620; border-radius: 8px; border: 1px solid #2a3447; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+  .tank-select-bar { display: flex; gap: 10px; margin-top: 15px; }
+  .garage-controls { width: 350px; background: #121620; border-radius: 8px; border: 1px solid #2a3447; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+  .stat-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 14px; }
+  .stat-bar { width: 120px; height: 10px; background: #1c2333; border-radius: 5px; overflow: hidden; }
+  .stat-fill { height: 100%; background: #4af; width: 0%; transition: width 0.3s; }
+  .upgrade-item { display: flex; justify-content: space-between; align-items: center; background: #1a2130; padding: 8px 12px; border-radius: 6px; border: 1px solid #2a354a; }
 
-.screen.active{
-  display:flex;
-}
+  /* Country Selection Grid */
+  .faction-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 600px; width: 100%; }
+  .faction-card { background: #121620; border: 2px solid #2a3447; border-radius: 8px; padding: 25px; text-align: center; cursor: pointer; transition: all 0.2s; }
+  .faction-card:hover { border-color: #4af; transform: scale(1.03); background: #1a2233; }
+  .faction-title { font-size: 20px; font-weight: bold; color: #4af; margin-bottom: 10px; }
 
-#menu{
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  background:
-    radial-gradient(circle at 50% 35%,#304347,#111b1e 35%,#050708 80%);
-}
+  /* Missions List */
+  .missions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; width: 100%; max-width: 900px; max-height: 60vh; overflow-y: auto; padding: 10px; }
+  .mission-card { background: #121620; border: 1px solid #2a3447; border-radius: 6px; padding: 15px; text-align: center; cursor: pointer; }
+  .mission-card.locked { opacity: 0.4; cursor: not-allowed; }
+  .mission-card.active { border-color: #4af; background: #1a2233; }
 
-.menu{
-  width:min(520px,94vw);
-  padding:28px;
-  border:1px solid #43585b;
-  border-radius:20px;
-  background:#0b1316ee;
-  box-shadow:0 25px 80px #000c;
-}
+  /* HUD Overlay */
+  #hud { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: none; z-index: 5; }
+  .hud-top { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; }
+  .hud-card { background: rgba(18, 22, 31, 0.85); border: 1px solid rgba(59, 72, 97, 0.6); padding: 10px 18px; border-radius: 6px; font-weight: bold; color: #fff; font-size: 14px; backdrop-filter: blur(4px); }
+  .hud-center { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); text-align: center; }
+  .reload-bar-container { width: 150px; height: 6px; background: rgba(0,0,0,0.5); border-radius: 3px; margin-top: 4px; overflow: hidden; }
+  .reload-bar-fill { height: 100%; background: #4af; width: 100%; }
 
-.logo{
-  font-size:clamp(38px,9vw,72px);
-  line-height:.9;
-  font-weight:1000;
-  letter-spacing:2px;
-}
+  /* Controls Overlay for Mobile */
+  .touch-controls { position: absolute; bottom: 20px; left: 20px; right: 20px; top: 0; pointer-events: none; display: none; }
+  .joystick-zone { position: absolute; bottom: 30px; left: 30px; width: 120px; height: 120px; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.15); border-radius: 50%; pointer-events: auto; }
+  .joystick-knob { position: absolute; top: 35px; left: 35px; width: 50px; height: 50px; background: rgba(68, 170, 255, 0.4); border-radius: 50%; border: 1px solid #4af; }
+  .fire-btn { position: absolute; bottom: 35px; right: 35px; width: 90px; height: 90px; background: rgba(231, 76, 60, 0.4); border: 2px solid #e74c3c; border-radius: 50%; pointer-events: auto; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; color: #fff; }
+  .fire-btn:active { background: rgba(231, 76, 60, 0.7); }
 
-.logo span{
-  color:#e5b735;
-}
+  /* Canvas */
+  canvas { display: block; width: 100%; height: 100%; background: #15181e; }
+  
+  /* Footer Branding */
+  .footer-brand { position: absolute; bottom: 10px; text-align: center; width: 100%; font-size: 12px; color: #4a5568; letter-spacing: 1px; }
 
-.subtitle{
-  margin:12px 0 25px;
-  color:#9eacad;
-  letter-spacing:2px;
-}
-
-.btn{
-  width:100%;
-  margin:6px 0;
-  padding:14px;
-  border-radius:11px;
-  background:#26373a;
-  border:1px solid #45595c;
-  font-weight:900;
-}
-
-.primary{
-  background:linear-gradient(#e9bd45,#8b691b);
-  color:#111;
-}
-
-.btn:active{
-  transform:scale(.98);
-}
-
-.small{
-  color:#849497;
-  font-size:12px;
-}
-
-/* GARAGE */
-
-#garage{
-  flex-direction:column;
-  padding:16px;
-  background:linear-gradient(145deg,#071013,#172225);
-}
-
-.topbar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-}
-
-.back{
-  padding:10px 13px;
-  border-radius:9px;
-  background:#27383b;
-}
-
-.title{
-  font-size:25px;
-  font-weight:1000;
-}
-
-.money{
-  padding:9px 12px;
-  border-radius:9px;
-  background:#1b292c;
-  color:#ffd64d;
-  font-weight:900;
-}
-
-.tankGrid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:12px;
-  overflow:auto;
-  margin-top:15px;
-  padding-bottom:20px;
-}
-
-.tankCard{
-  padding:12px;
-  border-radius:14px;
-  background:#0d181a;
-  border:1px solid #35484b;
-}
-
-.tankIcon{
-  height:100px;
-  display:grid;
-  place-items:center;
-}
-
-.tankIcon canvas{
-  width:130px;
-  height:90px;
-}
-
-.tankStats{
-  color:#9eadaf;
-  font-size:12px;
-  line-height:1.5;
-  margin:6px 0 10px;
-}
-
-.tankCard button{
-  width:100%;
-  padding:9px;
-  border-radius:9px;
-  background:#293c3f;
-  font-weight:900;
-}
-
-.owned{
-  background:#315e42!important;
-}
-
-.selected{
-  background:#d9aa32!important;
-  color:#111;
-}
-
-/* BATTLE */
-
-#battle{
-  background:#20281f;
-  overflow:hidden;
-}
-
-#gameCanvas{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  touch-action:none;
-}
-
-#hud{
-  position:absolute;
-  z-index:5;
-  top:8px;
-  left:8px;
-  right:8px;
-  display:flex;
-  justify-content:space-between;
-  pointer-events:none;
-}
-
-.hudBox{
-  padding:8px 11px;
-  border-radius:9px;
-  border:1px solid #47595c;
-  background:#071012dd;
-  font-size:12px;
-}
-
-#controls{
-  position:absolute;
-  z-index:6;
-  left:14px;
-  right:14px;
-  bottom:14px;
-  display:flex;
-  justify-content:space-between;
-  align-items:end;
-  pointer-events:none;
-}
-
-#joystick{
-  width:125px;
-  height:125px;
-  border-radius:50%;
-  background:#071012aa;
-  border:2px solid #667477;
-  position:relative;
-  pointer-events:auto;
-  touch-action:none;
-}
-
-#stick{
-  position:absolute;
-  width:52px;
-  height:52px;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  border-radius:50%;
-  background:#b6c0c0;
-  opacity:.8;
-}
-
-#fire{
-  width:82px;
-  height:82px;
-  border-radius:50%;
-  background:#8d241d;
-  border:2px solid #df6254;
-  font-weight:1000;
-  pointer-events:auto;
-  touch-action:none;
-}
-
-#fire:active{
-  transform:scale(.94);
-}
-
-#result{
-  position:absolute;
-  z-index:20;
-  left:50%;
-  top:48%;
-  transform:translate(-50%,-50%);
-  width:min(390px,90vw);
-  padding:23px;
-  text-align:center;
-  border:1px solid #45595c;
-  border-radius:17px;
-  background:#0b1417f7;
-  box-shadow:0 25px 70px #000d;
-}
-
-.resultTitle{
-  font-size:32px;
-  font-weight:1000;
-}
-
-.hidden{
-  display:none!important;
-}
-
-@media(max-width:500px){
-  #joystick{
-    width:110px;
-    height:110px;
+  @media (max-width: 768px) {
+    .garage-container { flex-direction: column; }
+    .garage-controls { width: 100%; }
+    h1.title { font-size: 2rem; }
   }
-
-  #fire{
-    width:76px;
-    height:76px;
-  }
-}
 </style>
 </head>
-
 <body>
-
-<div id="app">
-
-<!-- MENU -->
-<section id="menu" class="screen active">
-  <div class="menu">
-
-    <div class="logo">
-      TANKEDITOR<br>
-      <span>BATTLE LEGENDS</span>
-    </div>
-
-    <div class="subtitle">
-      V2 • ARMORED COMBAT
-    </div>
-
-    <button class="btn primary" id="startBtn">
-      START BATTLE
-    </button>
-
-    <button class="btn" id="garageBtn">
-      GARAGE
-    </button>
-
-    <button class="btn" id="resetBtn">
-      RESET SAVE
-    </button>
-
-    <p class="small">
-      Made by TankEditor
-    </p>
-
-  </div>
-</section>
-
-
-<!-- GARAGE -->
-<section id="garage" class="screen">
-
-  <div class="topbar">
-
-    <button class="back" id="backBtn">
-      ← MENU
-    </button>
-
-    <div class="title">
-      GARAGE
-    </div>
-
-    <div class="money">
-      🪙 <span id="garageCoins">0</span>
-    </div>
-
-  </div>
-
-  <div class="small" id="factionText"></div>
-
-  <div class="tankGrid" id="tankGrid"></div>
-
-</section>
-
-
-<!-- BATTLE -->
-<section id="battle" class="screen">
 
   <canvas id="gameCanvas"></canvas>
 
+  <div id="countryScreen" class="screen">
+    <div class="menu-content">
+      <h1 class="title">Select Your Faction</h1>
+      <div class="subtitle">Choose your military alignment to begin deployment</div>
+      <div class="faction-grid">
+        <div class="faction-card" onclick="selectFaction('EAGLE')">
+          <div class="faction-title">EAGLE</div>
+          <div>Precision & Speed Defense Force</div>
+        </div>
+        <div class="faction-card" onclick="selectFaction('BEAR')">
+          <div class="faction-title">BEAR</div>
+          <div>Heavy Armor & Firepower Division</div>
+        </div>
+        <div class="faction-card" onclick="selectFaction('LION')">
+          <div class="faction-title">LION</div>
+          <div>Balanced Tactical Vanguard</div>
+        </div>
+        <div class="faction-card" onclick="selectFaction('FALCON')">
+          <div class="faction-title">FALCON</div>
+          <div>Rapid Stealth Operations</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="mainMenu" class="screen active">
+    <div class="top-bar">
+      <div class="stat-item">FACTION: <span id="lblFaction">EAGLE</span></div>
+      <div class="user-stats">
+        <div class="stat-item">LVL: <span id="lblLevel">1</span></div>
+        <div class="stat-item">COINS: <span id="lblCoins">0</span></div>
+      </div>
+    </div>
+    <div class="menu-content">
+      <h1 class="title">TANKEDITOR<br><span style="font-size:1.8rem; color:#fff;">BATTLE LEGENDS</span></h1>
+      <div class="subtitle">Tactical Armored Combat Simulator</div>
+      <button class="btn btn-primary" onclick="openMissions()">Play / Start Battle</button>
+      <button class="btn" onclick="openGarage()">Garage</button>
+      <button class="btn" onclick="openMissions()">Missions</button>
+      <button class="btn" onclick="openSettings()">Settings</button>
+      <button class="btn" onclick="openCredits()">Credits</button>
+    </div>
+    <div class="footer-brand">MADE BY TANKEDITOR</div>
+  </div>
+
+  <div id="garageScreen" class="screen">
+    <div class="top-bar">
+      <button class="btn" style="min-width:auto; padding: 6px 16px;" onclick="showScreen('mainMenu')">&larr; Back</button>
+      <div class="user-stats">
+        <div class="stat-item">COINS: <span id="lblGarageCoins">0</span></div>
+      </div>
+    </div>
+    <div class="garage-container">
+      <div class="tank-preview">
+        <canvas id="garageCanvas" width="300" height="300"></canvas>
+        <h2 id="tankName" style="margin-top:10px; color:#4af;">SCOUT</h2>
+        <div class="tank-select-bar">
+          <button class="btn" style="min-width:60px;" onclick="prevTank()">&lt;</button>
+          <button id="btnUnlockSelect" class="btn btn-primary" style="min-width:140px;" onclick="actionTank()">SELECT</button>
+          <button class="btn" style="min-width:60px;" onclick="nextTank()">&gt;</button>
+        </div>
+      </div>
+      <div class="garage-controls">
+        <h3>TANK SPECIFICATIONS</h3>
+        <div style="margin-top:10px;">
+          <div class="stat-row"><span>Armor:</span><div class="stat-bar"><div id="barArmor" class="stat-fill"></div></div></div>
+          <div class="stat-row"><span>Damage:</span><div class="stat-bar"><div id="barDamage" class="stat-fill"></div></div></div>
+          <div class="stat-row"><span>Speed:</span><div class="stat-bar"><div id="barSpeed" class="stat-fill"></div></div></div>
+          <div class="stat-row"><span>Reload Rate:</span><div class="stat-bar"><div id="barReload" class="stat-fill"></div></div></div>
+          <div class="stat-row"><span>Max HP:</span><div class="stat-bar"><div id="barHP" class="stat-fill"></div></div></div>
+        </div>
+        <hr style="border-color:#2a3447; margin:10px 0;">
+        <h3>UPGRADES</h3>
+        <div class="upgrade-item">
+          <div>Armor Level <span id="lvlArmor">1</span></div>
+          <button class="btn" style="min-width:auto; padding:6px 12px; font-size:12px;" onclick="upgradeStat('armor')">UPGRADE (<span id="costArmor">100</span>c)</button>
+        </div>
+        <div class="upgrade-item">
+          <div>Damage Level <span id="lvlDamage">1</span></div>
+          <button class="btn" style="min-width:auto; padding:6px 12px; font-size:12px;" onclick="upgradeStat('damage')">UPGRADE (<span id="costDamage">100</span>c)</button>
+        </div>
+        <div class="upgrade-item">
+          <div>Speed Level <span id="lvlSpeed">1</span></div>
+          <button class="btn" style="min-width:auto; padding:6px 12px; font-size:12px;" onclick="upgradeStat('speed')">UPGRADE (<span id="costSpeed">100</span>c)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="missionsScreen" class="screen">
+    <div class="top-bar">
+      <button class="btn" style="min-width:auto; padding: 6px 16px;" onclick="showScreen('mainMenu')">&larr; Back</button>
+      <div style="font-weight:bold; color:#4af;">SELECT MISSION</div>
+      <div></div>
+    </div>
+    <div class="menu-content">
+      <div id="missionsGrid" class="missions-grid"></div>
+    </div>
+  </div>
+
+  <div id="settingsScreen" class="screen">
+    <div class="top-bar">
+      <button class="btn" style="min-width:auto; padding: 6px 16px;" onclick="showScreen('mainMenu')">&larr; Back</button>
+      <div style="font-weight:bold; color:#4af;">SETTINGS</div>
+      <div></div>
+    </div>
+    <div class="menu-content">
+      <div class="upgrade-item" style="width:300px;">
+        <span>Sound Effects</span>
+        <button id="btnSound" class="btn" style="min-width:80px; padding:6px;" onclick="toggleSound()">ON</button>
+      </div>
+      <div class="upgrade-item" style="width:300px;">
+        <span>Screen Shake</span>
+        <button id="btnShake" class="btn" style="min-width:80px; padding:6px;" onclick="toggleShake()">ON</button>
+      </div>
+      <button class="btn btn-danger" style="margin-top:20px;" onclick="resetProgress()">Reset All Progress</button>
+    </div>
+  </div>
+
+  <div id="creditsScreen" class="screen">
+    <div class="top-bar">
+      <button class="btn" style="min-width:auto; padding: 6px 16px;" onclick="showScreen('mainMenu')">&larr; Back</button>
+      <div style="font-weight:bold; color:#4af;">CREDITS</div>
+      <div></div>
+    </div>
+    <div class="menu-content">
+      <h2>TANKEDITOR: BATTLE LEGENDS</h2>
+      <p style="margin-top:10px; color:#a0aec0;">Created entirely with native HTML5 Canvas & Web Audio API.</p>
+      <p style="margin-top:5px; color:#4af; font-weight:bold;">MADE BY TANKEDITOR</p>
+    </div>
+  </div>
+
   <div id="hud">
-
-    <div class="hudBox">
-      MISSION <b id="mission">1</b>
+    <div class="hud-top">
+      <div class="hud-card">HP: <span id="hudHp">100/100</span> | ARMOR: <span id="hudArmor">10</span></div>
+      <div class="hud-center hud-card">
+        <div id="hudMission">MAP 1 / 120</div>
+        <div id="hudObjective" style="font-size:11px; color:#a0aec0;">DESTROY ALL ENEMIES</div>
+        <div class="reload-bar-container"><div id="hudReload" class="reload-bar-fill"></div></div>
+      </div>
+      <div class="hud-card">ENEMIES: <span id="hudEnemies">0</span> | WAVE: <span id="hudWave">1</span></div>
     </div>
+    <button class="btn" style="position:absolute; top:15px; right:15px; min-width:auto; padding:6px 12px; pointer-events:auto;" onclick="pauseGame()">PAUSE</button>
 
-    <div class="hudBox">
-      ❤️ <b id="hpText">100</b>
-      &nbsp; 🪙 <b id="battleCoins">0</b>
+    <div id="touchControls" class="touch-controls">
+      <div id="joystickZone" class="joystick-zone"><div id="joystickKnob" class="joystick-knob"></div></div>
+      <div id="fireBtn" class="fire-btn">FIRE</div>
     </div>
-
   </div>
 
-
-  <div id="controls">
-
-    <div id="joystick">
-      <div id="stick"></div>
+  <div id="pauseScreen" class="screen">
+    <div class="menu-content">
+      <h1 class="title">GAME PAUSED</h1>
+      <button class="btn btn-primary" onclick="resumeGame()">Resume</button>
+      <button class="btn" onclick="exitToMenu()">Abandon Battle</button>
     </div>
-
-    <button id="fire">
-      FIRE<br>💥
-    </button>
-
   </div>
 
-
-  <div id="result" class="hidden">
-
-    <div class="resultTitle" id="resultTitle"></div>
-
-    <p id="resultText"></p>
-
-    <button class="btn primary" id="continueBtn">
-      CONTINUE
-    </button>
-
-    <button class="btn" id="resultMenuBtn">
-      MENU
-    </button>
-
+  <div id="resultScreen" class="screen">
+    <div class="menu-content">
+      <h1 id="resultTitle" class="title" style="color:#2ecc71;">VICTORY</h1>
+      <div id="resultDetails" style="text-align:center; margin:15px 0; font-size:18px;">
+        <p>Coins Earned: <span id="resCoins" style="color:#f5b041;">+100</span></p>
+        <p>XP Earned: <span id="resXp" style="color:#4af;">+50</span></p>
+        <p>Enemies Destroyed: <span id="resEnemies">5</span></p>
+      </div>
+      <button id="btnNextMission" class="btn btn-primary" onclick="nextMissionAction()">Next Mission</button>
+      <button class="btn" onclick="openGarage()">Garage</button>
+      <button class="btn" onclick="exitToMenu()">Main Menu</button>
+    </div>
   </div>
-
-</section>
-
-</div>
-
 
 <script>
-"use strict";
+/* ==========================================================================
+   AUDIO ENGINE (Web Audio API)
+   ========================================================================== */
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
 
-/* =========================================================
-   DATA
-========================================================= */
+function initAudio() {
+  if (!audioCtx) audioCtx = new AudioCtx();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
 
+function playSound(type) {
+  if (!saveData.settings.sound || !audioCtx) return;
+  try {
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    if (type === 'shoot') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(300, now);
+      osc.frequency.exponentialRampToValueAtTime(10, now + 0.15);
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+      osc.start(now);
+      osc.stop(now + 0.15);
+    } else if (type === 'explosion') {
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(100, now);
+      osc.frequency.exponentialRampToValueAtTime(15, now + 0.4);
+      gain.gain.setValueAtTime(0.5, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
+      osc.start(now);
+      osc.stop(now + 0.4);
+    } else if (type === 'hit') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(150, now);
+      osc.frequency.linearRampToValueAtTime(40, now + 0.08);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+      osc.start(now);
+      osc.stop(now + 0.08);
+    }
+  } catch(e) {}
+}
+
+/* ==========================================================================
+   GAME STATE & CONFIGURATION
+   ========================================================================== */
 const TANKS = [
-
-  {
-    id:"scout",
-    name:"SCOUT",
-    price:0,
-    hp:120,
-    damage:25,
-    speed:220,
-    reload:380,
-    armor:5,
-    scale:1
-  },
-
-  {
-    id:"crusher",
-    name:"CRUSHER",
-    price:300,
-    hp:170,
-    damage:34,
-    speed:185,
-    reload:450,
-    armor:9,
-    scale:1.08
-  },
-
-  {
-    id:"titan",
-    name:"TITAN",
-    price:750,
-    hp:240,
-    damage:48,
-    speed:155,
-    reload:520,
-    armor:14,
-    scale:1.18
-  },
-
-  {
-    id:"legend",
-    name:"LEGEND",
-    price:1500,
-    hp:320,
-    damage:65,
-    speed:145,
-    reload:600,
-    armor:20,
-    scale:1.28
-  }
-
+  { id: 'scout', name: 'SCOUT', hp: 80, armor: 5, damage: 15, fireRate: 0.35, speed: 4.2, range: 450, cost: 0, color: '#3498db', special: 'Rapid Fire' },
+  { id: 'crusher', name: 'CRUSHER', hp: 120, armor: 12, damage: 35, fireRate: 0.75, speed: 3.2, range: 400, cost: 250, color: '#e67e22', special: 'Heavy Shells' },
+  { id: 'titan', name: 'TITAN', hp: 200, armor: 25, damage: 50, fireRate: 1.1, speed: 2.3, range: 500, cost: 600, color: '#9b59b6', special: 'Blast Shield' },
+  { id: 'phantom', name: 'PHANTOM', hp: 100, armor: 8, damage: 70, fireRate: 1.4, speed: 3.8, range: 650, cost: 1200, color: '#1abc9c', special: 'Sniper Velocity' },
+  { id: 'legend', name: 'LEGEND', hp: 250, armor: 30, damage: 90, fireRate: 0.5, speed: 3.6, range: 600, cost: 2500, color: '#f1c40f', special: 'Aura of Power' }
 ];
 
-
-const DEFAULT_SAVE = {
-
-  coins:500,
-
-  level:1,
-
-  country:null,
-
-  owned:["scout"],
-
-  selected:"scout",
-
-  upgrades:{}
-
+const ENEMY_TYPES = {
+  scout: { hp: 40, armor: 2, damage: 8, speed: 3.2, color: '#e74c3c', radius: 18, fireRate: 1.0 },
+  assault: { hp: 80, armor: 8, damage: 18, speed: 2.2, color: '#c0392b', radius: 22, fireRate: 1.2 },
+  heavy: { hp: 160, armor: 18, damage: 35, speed: 1.5, color: '#8e44ad', radius: 26, fireRate: 1.8 },
+  sniper: { hp: 50, armor: 4, damage: 45, speed: 2.5, color: '#16a085', radius: 19, fireRate: 2.2 },
+  elite: { hp: 220, armor: 22, damage: 40, speed: 2.8, color: '#d35400', radius: 25, fireRate: 0.8 },
+  boss: { hp: 600, armor: 35, damage: 65, speed: 1.2, color: '#2c3e50', radius: 36, fireRate: 0.6 }
 };
 
+let saveData = {
+  faction: null,
+  level: 1,
+  xp: 0,
+  coins: 0,
+  currentMission: 1,
+  unlockedTanks: ['scout'],
+  selectedTank: 'scout',
+  upgrades: { armor: 0, damage: 0, speed: 0 },
+  settings: { sound: true, shake: true }
+};
 
-let save;
-
-let game=null;
-
-let animationId=null;
-
-let enemyTimer=null;
-
-
-/* =========================================================
-   DOM
-========================================================= */
-
-const $ = id => document.getElementById(id);
-
-const canvas=$("gameCanvas");
-
-const ctx=canvas.getContext("2d");
-
-
-/* =========================================================
-   SAVE
-========================================================= */
-
-function loadSave(){
-
-  try{
-
-    const raw=
-      localStorage.getItem(
-        "TANKEDITOR_BATTLE_LEGENDS_V2"
-      );
-
-    if(!raw){
-
-      return {
-        ...DEFAULT_SAVE,
-        owned:["scout"],
-        upgrades:{}
-      };
-
+function loadGame() {
+  try {
+    const raw = localStorage.getItem('TANKEDITOR_SAVE');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      saveData = Object.assign({}, saveData, parsed);
     }
-
-    const data=JSON.parse(raw);
-
-    return {
-
-      ...DEFAULT_SAVE,
-
-      ...data,
-
-      owned:
-        Array.isArray(data.owned)
-        ? data.owned
-        : ["scout"],
-
-      upgrades:
-        data.upgrades || {}
-
-    };
-
-  }catch(e){
-
-    return {
-      ...DEFAULT_SAVE,
-      owned:["scout"],
-      upgrades:{}
-    };
-
-  }
-
+  } catch(e) { console.error("Save load fallback", e); }
+  updateUI();
 }
 
-
-function saveGame(){
-
-  localStorage.setItem(
-    "TANKEDITOR_BATTLE_LEGENDS_V2",
-    JSON.stringify(save)
-  );
-
+function saveGame() {
+  try {
+    localStorage.setItem('TANKEDITOR_SAVE', JSON.stringify(saveData));
+  } catch(e) {}
 }
 
-
-/* =========================================================
-   SCREEN
-========================================================= */
-
-function showScreen(id){
-
-  document
-    .querySelectorAll(".screen")
-    .forEach(s=>s.classList.remove("active"));
-
-  $(id).classList.add("active");
-
-}
-
-
-/* =========================================================
-   TANK
-========================================================= */
-
-function getTank(){
-
-  return TANKS.find(
-    t=>t.id===save.selected
-  ) || TANKS[0];
-
-}
-
-
-function getUpgradeLevel(id){
-
-  return Number(
-    save.upgrades[id] || 0
-  );
-
-}
-
-
-function getTankStats(tank){
-
-  const upgrade=
-    getUpgradeLevel(tank.id);
-
-  return {
-
-    hp:
-      tank.hp+
-      upgrade*18,
-
-    damage:
-      tank.damage+
-      upgrade*4,
-
-    speed:
-      tank.speed+
-      upgrade*5,
-
-    armor:
-      tank.armor+
-      upgrade*2,
-
-    reload:
-      Math.max(
-        180,
-        tank.reload-
-        upgrade*18
-      )
-
-  };
-
-}
-
-
-/* =========================================================
-   GARAGE
-========================================================= */
-
-function drawMiniTank(canvas,tank){
-
-  const c=canvas.getContext("2d");
-
-  c.clearRect(0,0,canvas.width,canvas.height);
-
-  c.save();
-
-  c.translate(
-    canvas.width/2,
-    canvas.height/2
-  );
-
-  c.fillStyle="#151b1b";
-
-  c.fillRect(
-    -52,
-    -28,
-    104,
-    56
-  );
-
-  c.fillStyle="#252e2d";
-
-  c.fillRect(
-    -43,
-    -22,
-    86,
-    44
-  );
-
-  c.fillStyle="#58635d";
-
-  c.fillRect(
-    -22,
-    -19,
-    44,
-    32
-  );
-
-  c.fillStyle="#6d7770";
-
-  c.fillRect(
-    -15,
-    -15,
-    30,
-    24
-  );
-
-  c.fillStyle="#777";
-
-  c.fillRect(
-    8,
-    -5,
-    55,
-    10
-  );
-
-  c.fillStyle="#090b0b";
-
-  c.fillRect(
-    -58,
-    -30,
-    14,
-    60
-  );
-
-  c.fillRect(
-    44,
-    -30,
-    14,
-    60
-  );
-
-  c.restore();
-
-}
-
-
-function renderGarage(){
-
-  $("garageCoins").textContent=
-    save.coins;
-
-  $("factionText").textContent=
-    save.country
-    ? "Faction: "+save.country
-    : "Faction: none";
-
-
-  $("tankGrid").innerHTML=
-    TANKS.map(t=>{
-
-      const owned=
-        save.owned.includes(t.id);
-
-      const selected=
-        save.selected===t.id;
-
-      const stats=
-        getTankStats(t);
-
-      let label;
-
-      if(selected)
-        label="SELECTED";
-      else if(owned)
-        label="SELECT";
-      else
-        label="🪙 "+t.price;
-
-
-      return `
-
-        <div class="tankCard">
-
-          <div class="tankIcon">
-            <canvas
-              width="180"
-              height="100"
-              data-mini="${t.id}">
-            </canvas>
-          </div>
-
-          <b>${t.name}</b>
-
-          <div class="tankStats">
-            HP: ${stats.hp}<br>
-            DAMAGE: ${stats.damage}<br>
-            SPEED: ${Math.round(stats.speed)}<br>
-            ARMOR: ${stats.armor}<br>
-            LEVEL: ${getUpgradeLevel(t.id)}
-          </div>
-
-          <button
-            data-tank="${t.id}"
-            class="${
-              selected
-              ?"selected"
-              :owned
-              ?"owned"
-              :""
-            }">
-
-            ${label}
-
-          </button>
-
-        </div>
-
-      `;
-
-    }).join("");
-
-
-  TANKS.forEach(t=>{
-
-    const mini=
-      document.querySelector(
-        `[data-mini="${t.id}"]`
-      );
-
-    if(mini)
-      drawMiniTank(mini,t);
-
-  });
-
-
-  document
-    .querySelectorAll("[data-tank]")
-    .forEach(button=>{
-
-      button.onclick=()=>{
-
-        const tank=
-          TANKS.find(
-            t=>t.id===button.dataset.tank
-          );
-
-        if(!tank)return;
-
-
-        if(save.owned.includes(tank.id)){
-
-          save.selected=tank.id;
-
-          saveGame();
-
-          renderGarage();
-
-          return;
-
-        }
-
-
-        if(save.coins>=tank.price){
-
-          save.coins-=tank.price;
-
-          save.owned.push(tank.id);
-
-          save.selected=tank.id;
-
-          saveGame();
-
-          renderGarage();
-
-        }
-
-      };
-
-    });
-
-}
-
-
-/* =========================================================
-   CANVAS RESIZE
-========================================================= */
-
-function resizeCanvas(){
-
-  canvas.width=window.innerWidth;
-  canvas.height=window.innerHeight;
-
-}
-
-window.addEventListener(
-  "resize",
-  resizeCanvas
-);
-
-resizeCanvas();
-
-
-/* =========================================================
-   MAP
-========================================================= */
-
-function createMap(){
-
-  const obstacles=[];
-
-  const w=canvas.width;
-  const h=canvas.height;
-
-  for(let i=0;i<10;i++){
-
-    const width=
-      60+
-      Math.random()*100;
-
-    const height=
-      35+
-      Math.random()*65;
-
-    obstacles.push({
-
-      x:
-        30+
-        Math.random()*
-        Math.max(1,w-width-60),
-
-      y:
-        80+
-        Math.random()*
-        Math.max(1,h-250),
-
-      w:width,
-
-      h:height
-
-    });
-
-  }
-
-  return obstacles;
-
-}
-
-
-/* =========================================================
-   BATTLE START
-========================================================= */
-
-function startBattle(){
-
-  const tank=getTank();
-
-  const stats=getTankStats(tank);
-
-  if(!save.country){
-
-    showScreen("garage");
-
-    return;
-
-  }
-
-
-  game={
-
-    width:canvas.width,
-
-    height:canvas.height,
-
-    player:{
-
-      x:canvas.width/2,
-
-      y:canvas.height-180,
-
-      angle:-Math.PI/2,
-
-      hp:stats.hp,
-
-      maxHp:stats.hp,
-
-      damage:stats.damage,
-
-      speed:stats.speed,
-
-      armor:stats.armor,
-
-      reload:stats.reload,
-
-      lastShot:0
-
-    },
-
-    enemy:{
-
-      x:canvas.width/2,
-
-      y:130,
-
-      angle:Math.PI/2,
-
-      hp:
-        100+
-        save.level*35,
-
-      maxHp:
-        100+
-        save.level*35,
-
-      speed:
-        75+
-        save.level*3,
-
-      lastShot:0,
-
-      reload:
-        Math.max(
-          700-
-          save.level*8,
-          360
-        )
-
-    },
-
-    bullets:[],
-
-    particles:[],
-
-    obstacles:createMap(),
-
-    keys:{},
-
-    joyX:0,
-
-    joyY:0,
-
-    over:false
-
-  };
-
-
-  $("mission").textContent=
-    save.level;
-
-  $("battleCoins").textContent=
-    save.coins;
-
-  $("result").classList.add(
-    "hidden"
-  );
-
-
-  showScreen("battle");
-
-
-  cancelAnimationFrame(
-    animationId
-  );
-
-  loop(
-    performance.now()
-  );
-
-}
-
-
-/* =========================================================
-   INPUT
-========================================================= */
-
-window.addEventListener(
-  "keydown",
-  e=>{
-
-    if(!game)return;
-
-    game.keys[e.key.toLowerCase()]=true;
-
-    if(e.code==="Space")
-      shootPlayer();
-
-  }
-);
-
-
-window.addEventListener(
-  "keyup",
-  e=>{
-
-    if(!game)return;
-
-    game.keys[e.key.toLowerCase()]=false;
-
-  }
-);
-
-
-/* =========================================================
-   JOYSTICK
-========================================================= */
-
-const joystick=$("joystick");
-
-const stick=$("stick");
-
-let joystickActive=false;
-
-
-function joystickMove(clientX,clientY){
-
-  const r=
-    joystick.getBoundingClientRect();
-
-  const cx=
-    r.left+r.width/2;
-
-  const cy=
-    r.top+r.height/2;
-
-  let dx=clientX-cx;
-
-  let dy=clientY-cy;
-
-  const max=r.width*.34;
-
-  const len=Math.hypot(dx,dy);
-
-  if(len>max){
-
-    dx=
-      dx/len*max;
-
-    dy=
-      dy/len*max;
-
-  }
-
-
-  stick.style.left=
-    `calc(50% + ${dx}px)`;
-
-  stick.style.top=
-    `calc(50% + ${dy}px)`;
-
-
-  if(game){
-
-    game.joyX=
-      dx/max;
-
-    game.joyY=
-      dy/max;
-
-  }
-
-}
-
-
-function joystickEnd(){
-
-  joystickActive=false;
-
-  stick.style.left="50%";
-
-  stick.style.top="50%";
-
-  if(game){
-
-    game.joyX=0;
-
-    game.joyY=0;
-
-  }
-
-}
-
-
-joystick.addEventListener(
-  "pointerdown",
-  e=>{
-
-    joystickActive=true;
-
-    joystick.setPointerCapture(
-      e.pointerId
-    );
-
-    joystickMove(
-      e.clientX,
-      e.clientY
-    );
-
-  }
-);
-
-
-joystick.addEventListener(
-  "pointermove",
-  e=>{
-
-    if(joystickActive)
-      joystickMove(
-        e.clientX,
-        e.clientY
-      );
-
-  }
-);
-
-
-joystick.addEventListener(
-  "pointerup",
-  joystickEnd
-);
-
-
-joystick.addEventListener(
-  "pointercancel",
-  joystickEnd
-);
-
-
-/* =========================================================
-   FIRE BUTTON
-========================================================= */
-
-$("fire").addEventListener(
-  "pointerdown",
-  e=>{
-
-    e.preventDefault();
-
-    shootPlayer();
-
-  }
-);
-
-
-/* =========================================================
-   MOVEMENT
-========================================================= */
-
-function movePlayer(dt){
-
-  const p=game.player;
-
-  let x=0;
-  let y=0;
-
-
-  if(game.keys["w"] ||
-     game.keys["arrowup"])
-    y-=1;
-
-  if(game.keys["s"] ||
-     game.keys["arrowdown"])
-    y+=1;
-
-  if(game.keys["a"] ||
-     game.keys["arrowleft"])
-    x-=1;
-
-  if(game.keys["d"] ||
-     game.keys["arrowright"])
-    x+=1;
-
-
-  x+=game.joyX;
-
-  y+=game.joyY;
-
-
-  const length=
-    Math.hypot(x,y);
-
-
-  if(length>1){
-
-    x/=length;
-    y/=length;
-
-  }
-
-
-  if(length>.05){
-
-    p.angle=
-      Math.atan2(y,x);
-
-    const nx=
-      p.x+
-      x*p.speed*dt;
-
-    const ny=
-      p.y+
-      y*p.speed*dt;
-
-
-    if(!collidesTank(
-      nx,
-      ny,
-      25
-    )){
-
-      p.x=nx;
-      p.y=ny;
-
-    }
-
-  }
-
-
-  p.x=
-    Math.max(
-      30,
-      Math.min(
-        canvas.width-30,
-        p.x
-      )
-    );
-
-  p.y=
-    Math.max(
-      70,
-      Math.min(
-        canvas.height-40,
-        p.y
-      )
-    );
-
-}
-
-
-/* =========================================================
-   COLLISION
-========================================================= */
-
-function collidesTank(x,y,r){
-
-  for(const o of game.obstacles){
-
-    if(
-      x+r>o.x &&
-      x-r<o.x+o.w &&
-      y+r>o.y &&
-      y-r<o.y+o.h
-    ){
-
-      return true;
-
-    }
-
-  }
-
-  return false;
-
-}
-
-
-/* =========================================================
-   SHOOTING
-========================================================= */
-
-function shootPlayer(){
-
-  if(!game || game.over)
-    return;
-
-
-  const p=game.player;
-
-  const now=performance.now();
-
-
-  if(
-    now-p.lastShot<
-    p.reload
-  )
-    return;
-
-
-  p.lastShot=now;
-
-
-  createBullet(
-
-    p.x+
-      Math.cos(p.angle)*42,
-
-    p.y+
-      Math.sin(p.angle)*42,
-
-    p.angle,
-
-    true,
-
-    p.damage
-
-  );
-
-}
-
-
-/* =========================================================
-   BULLET
-========================================================= */
-
-function createBullet(
-  x,
-  y,
-  angle,
-  player,
-  damage
-){
-
-  game.bullets.push({
-
-    x,
-
-    y,
-
-    angle,
-
-    speed:
-      player
-      ? 620
-      : 430,
-
-    player,
-
-    damage,
-
-    life:1.8
-
-  });
-
-}
-
-
-function updateBullets(dt){
-
-  for(
-    let i=game.bullets.length-1;
-    i>=0;
-    i--
-  ){
-
-    const b=game.bullets[i];
-
-    b.x+=
-      Math.cos(b.angle)*
-      b.speed*
-      dt;
-
-    b.y+=
-      Math.sin(b.angle)*
-      b.speed*
-      dt;
-
-    b.life-=dt;
-
-
-    if(b.life<=0){
-
-      game.bullets.splice(i,1);
-
-      continue;
-
-    }
-
-
-    let remove=false;
-
-
-    for(const o of game.obstacles){
-
-      if(
-        b.x>o.x &&
-        b.x<o.x+o.w &&
-        b.y>o.y &&
-        b.y<o.y+o.h
-      ){
-
-        explosion(
-          b.x,
-          b.y,
-          false
-        );
-
-        remove=true;
-
-        break;
-
-      }
-
-    }
-
-
-    if(remove){
-
-      game.bullets.splice(i,1);
-
-      continue;
-
-    }
-
-
-    if(b.player){
-
-      const e=game.enemy;
-
-      if(
-        Math.hypot(
-          b.x-e.x,
-          b.y-e.y
-        )<30
-      ){
-
-        const damage=
-          Math.max(
-            5,
-            b.damage
-          );
-
-        e.hp=
-          Math.max(
-            0,
-            e.hp-damage
-          );
-
-        explosion(
-          b.x,
-          b.y,
-          true
-        );
-
-        game.bullets.splice(i,1);
-
-        if(e.hp<=0)
-          victory();
-
-      }
-
-    }else{
-
-      const p=game.player;
-
-      if(
-        Math.hypot(
-          b.x-p.x,
-          b.y-p.y
-        )<27
-      ){
-
-        const damage=
-          Math.max(
-            4,
-            b.damage-p.armor
-          );
-
-        p.hp=
-          Math.max(
-            0,
-            p.hp-damage
-          );
-
-        explosion(
-          b.x,
-          b.y
+/* ==========================================================================
+   GAME ENGINE & CANVAS SETUP
+   ========================================================================== */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const garageCanvas = document.getElementById('garageCanvas');
+const gctx = garageCanvas.getContext('2d');
+
+let screenWidth = 0, screenHeight = 0;
+let lastTime = 0;
+let gameState = 'MENU';
+let currentMissionData = null;
+let shakeTime = 0;
+
+function resize() {
+  screenWidth = window.innerWidth;
+  screenHeight = window.innerHeight;
+  canvas.width = screenWidth;
+  canvas.heigh
