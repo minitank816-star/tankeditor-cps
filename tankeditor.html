@@ -3,305 +3,302 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>TANKEDITOR: BATTLE LEGENDS V1</title>
+<title>TANKEDITOR: BATTLE LEGENDS V2</title>
 
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{
- margin:0;width:100%;height:100%;overflow:hidden;
- background:#060a0c;color:#fff;font-family:Arial,sans-serif;
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
-button{font:inherit;color:inherit;border:0;cursor:pointer}
+
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#06090b;
+  color:#fff;
+  font-family:Arial,sans-serif;
+}
+
+button{
+  font:inherit;
+  border:0;
+  color:inherit;
+}
 
 .screen{
- position:absolute;inset:0;display:none;
+  position:absolute;
+  inset:0;
+  display:none;
 }
-.screen.active{display:flex}
+
+.screen.active{
+  display:flex;
+}
 
 #menu{
- align-items:center;justify-content:center;text-align:center;
- padding:18px;
- background:
- radial-gradient(circle at 50% 35%,#24383b 0,#101a1d 35%,#050809 80%);
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  background:
+    radial-gradient(circle at 50% 35%,#304347,#111b1e 35%,#050708 80%);
 }
 
-.card{
- width:min(480px,94vw);
- padding:25px;
- border:1px solid #405457;
- border-radius:18px;
- background:#0b1417ed;
- box-shadow:0 20px 70px #000b;
+.menu{
+  width:min(520px,94vw);
+  padding:28px;
+  border:1px solid #43585b;
+  border-radius:20px;
+  background:#0b1316ee;
+  box-shadow:0 25px 80px #000c;
 }
 
 .logo{
- font-size:clamp(34px,8vw,64px);
- font-weight:1000;
- letter-spacing:2px;
- line-height:.95;
+  font-size:clamp(38px,9vw,72px);
+  line-height:.9;
+  font-weight:1000;
+  letter-spacing:2px;
 }
-.logo span{color:#e2b233}
 
-.sub{
- color:#9caeb0;
- margin:12px 0 26px;
- letter-spacing:1px;
+.logo span{
+  color:#e5b735;
+}
+
+.subtitle{
+  margin:12px 0 25px;
+  color:#9eacad;
+  letter-spacing:2px;
 }
 
 .btn{
- width:100%;
- padding:14px;
- margin:6px 0;
- border-radius:10px;
- background:#26383b;
- border:1px solid #43575a;
- font-weight:900;
+  width:100%;
+  margin:6px 0;
+  padding:14px;
+  border-radius:11px;
+  background:#26373a;
+  border:1px solid #45595c;
+  font-weight:900;
 }
-.btn.primary{
- background:linear-gradient(#e8bb42,#8c6a19);
- color:#111;
- border-color:#f1d26a;
+
+.primary{
+  background:linear-gradient(#e9bd45,#8b691b);
+  color:#111;
 }
-.btn:active,.country:active{transform:scale(.98)}
+
+.btn:active{
+  transform:scale(.98);
+}
 
 .small{
- color:#89999b;
- font-size:12px;
+  color:#849497;
+  font-size:12px;
 }
 
-#country,#garage{
- padding:18px;
- flex-direction:column;
- background:linear-gradient(145deg,#071013,#172224);
+/* GARAGE */
+
+#garage{
+  flex-direction:column;
+  padding:16px;
+  background:linear-gradient(145deg,#071013,#172225);
 }
 
-.center{
- margin:auto;
- width:min(480px,94vw);
-}
-
-.title{
- font-size:25px;
- font-weight:1000;
-}
-
-.countryGrid{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:10px;
- margin-top:15px;
-}
-
-.country{
- padding:20px;
- border-radius:12px;
- background:#172628;
- border:1px solid #3c5053;
-}
-
-.top{
- display:flex;
- align-items:center;
- justify-content:space-between;
- gap:8px;
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
 }
 
 .back{
- padding:10px 13px;
- border-radius:9px;
- background:#27393c;
+  padding:10px 13px;
+  border-radius:9px;
+  background:#27383b;
 }
 
-.coins{
- padding:9px 12px;
- border-radius:9px;
- background:#1a292c;
- color:#ffd54d;
- font-weight:900;
+.title{
+  font-size:25px;
+  font-weight:1000;
 }
 
-.tanks{
- display:grid;
- grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
- gap:12px;
- overflow:auto;
- margin-top:15px;
- padding-bottom:15px;
+.money{
+  padding:9px 12px;
+  border-radius:9px;
+  background:#1b292c;
+  color:#ffd64d;
+  font-weight:900;
 }
 
-.tank{
- padding:12px;
- background:#101a1c;
- border:1px solid #34484b;
- border-radius:14px;
+.tankGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px;
+  overflow:auto;
+  margin-top:15px;
+  padding-bottom:20px;
 }
 
-.art{
- height:82px;
- display:grid;
- place-items:center;
- font-size:55px;
+.tankCard{
+  padding:12px;
+  border-radius:14px;
+  background:#0d181a;
+  border:1px solid #35484b;
 }
 
-.tank b{display:block}
-
-.stats{
- color:#aab6b8;
- font-size:12px;
- margin:5px 0 9px;
+.tankIcon{
+  height:100px;
+  display:grid;
+  place-items:center;
 }
 
-.tank button{
- width:100%;
- padding:9px;
- border-radius:9px;
- background:#293c3f;
- font-weight:800;
+.tankIcon canvas{
+  width:130px;
+  height:90px;
 }
 
-.owned{background:#315d41!important}
-.selected{background:#d9aa32!important;color:#111}
+.tankStats{
+  color:#9eadaf;
+  font-size:12px;
+  line-height:1.5;
+  margin:6px 0 10px;
+}
+
+.tankCard button{
+  width:100%;
+  padding:9px;
+  border-radius:9px;
+  background:#293c3f;
+  font-weight:900;
+}
+
+.owned{
+  background:#315e42!important;
+}
+
+.selected{
+  background:#d9aa32!important;
+  color:#111;
+}
 
 /* BATTLE */
 
 #battle{
- background:#20291f;
- overflow:hidden;
+  background:#20281f;
+  overflow:hidden;
 }
 
-.arena{
- position:absolute;
- inset:0;
- background:
- radial-gradient(circle at 20% 20%,#879178 0 2px,transparent 3px),
- linear-gradient(#657057 0 57%,#343d30 57%);
- background-size:36px 36px,100% 100%;
-}
-
-.arena:after{
- content:"";
- position:absolute;
- inset:57% 0 0;
- background:repeating-linear-gradient(
-  0deg,transparent 0 34px,#1d261c 35px 37px
- );
- opacity:.4;
+#gameCanvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  touch-action:none;
 }
 
 #hud{
- position:absolute;
- z-index:4;
- top:8px;
- left:8px;
- right:8px;
- display:flex;
- justify-content:space-between;
+  position:absolute;
+  z-index:5;
+  top:8px;
+  left:8px;
+  right:8px;
+  display:flex;
+  justify-content:space-between;
+  pointer-events:none;
 }
 
-.hud{
- background:#071012dd;
- border:1px solid #435457;
- border-radius:9px;
- padding:8px 10px;
- font-size:12px;
-}
-
-.entity{
- position:absolute;
- z-index:3;
- transform:translate(-50%,-50%);
- text-align:center;
-}
-
-.sprite{
- font-size:58px;
- filter:drop-shadow(0 8px 5px #0009);
-}
-
-.enemy .sprite{
- filter:
- hue-rotate(125deg)
- saturate(1.5)
- drop-shadow(0 8px 5px #0009);
-}
-
-.hp{
- width:76px;
- height:6px;
- background:#111;
- border-radius:5px;
- overflow:hidden;
- margin:auto;
-}
-
-.hp i{
- display:block;
- height:100%;
- width:100%;
- background:#4dcc68;
+.hudBox{
+  padding:8px 11px;
+  border-radius:9px;
+  border:1px solid #47595c;
+  background:#071012dd;
+  font-size:12px;
 }
 
 #controls{
- position:absolute;
- z-index:5;
- left:12px;
- right:12px;
- bottom:12px;
- display:flex;
- justify-content:space-between;
- align-items:end;
+  position:absolute;
+  z-index:6;
+  left:14px;
+  right:14px;
+  bottom:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  pointer-events:none;
 }
 
-.pad{
- display:grid;
- grid-template-columns:52px 52px 52px;
- grid-template-rows:52px 52px;
- gap:5px;
+#joystick{
+  width:125px;
+  height:125px;
+  border-radius:50%;
+  background:#071012aa;
+  border:2px solid #667477;
+  position:relative;
+  pointer-events:auto;
+  touch-action:none;
 }
 
-.pad button,.fire{
- width:52px;
- height:52px;
- background:#0a1315dd;
- border:1px solid #536467;
- border-radius:11px;
- font-weight:900;
+#stick{
+  position:absolute;
+  width:52px;
+  height:52px;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:#b6c0c0;
+  opacity:.8;
 }
 
-.pad .up{grid-column:2}
-.pad .left{grid-column:1;grid-row:2}
-.pad .down{grid-column:2;grid-row:2}
-.pad .right{grid-column:3;grid-row:2}
+#fire{
+  width:82px;
+  height:82px;
+  border-radius:50%;
+  background:#8d241d;
+  border:2px solid #df6254;
+  font-weight:1000;
+  pointer-events:auto;
+  touch-action:none;
+}
 
-.fire{
- width:75px;
- height:75px;
- border-radius:50%;
- background:#8c241d;
- border-color:#db5b4d;
+#fire:active{
+  transform:scale(.94);
 }
 
 #result{
- position:absolute;
- z-index:10;
- left:50%;
- top:48%;
- transform:translate(-50%,-50%);
- width:min(380px,88vw);
- padding:22px;
- text-align:center;
- border:1px solid #425356;
- border-radius:16px;
- background:#0c1517f5;
- box-shadow:0 20px 50px #000b;
+  position:absolute;
+  z-index:20;
+  left:50%;
+  top:48%;
+  transform:translate(-50%,-50%);
+  width:min(390px,90vw);
+  padding:23px;
+  text-align:center;
+  border:1px solid #45595c;
+  border-radius:17px;
+  background:#0b1417f7;
+  box-shadow:0 25px 70px #000d;
 }
 
 .resultTitle{
- font-size:30px;
- font-weight:1000;
+  font-size:32px;
+  font-weight:1000;
 }
 
-.hidden{display:none!important}
+.hidden{
+  display:none!important;
+}
+
+@media(max-width:500px){
+  #joystick{
+    width:110px;
+    height:110px;
+  }
+
+  #fire{
+    width:76px;
+    height:76px;
+  }
+}
 </style>
 </head>
 
@@ -309,98 +306,61 @@ button{font:inherit;color:inherit;border:0;cursor:pointer}
 
 <div id="app">
 
-<!-- MAIN MENU -->
+<!-- MENU -->
 <section id="menu" class="screen active">
-<div class="card">
+  <div class="menu">
 
-<div class="logo">
-TANKEDITOR<br>
-<span>BATTLE LEGENDS</span>
-</div>
+    <div class="logo">
+      TANKEDITOR<br>
+      <span>BATTLE LEGENDS</span>
+    </div>
 
-<div class="sub">
-V1 • BATTLE • UPGRADE • CONQUER
-</div>
+    <div class="subtitle">
+      V2 • ARMORED COMBAT
+    </div>
 
-<button class="btn primary" id="playBtn">
-START BATTLE
-</button>
+    <button class="btn primary" id="startBtn">
+      START BATTLE
+    </button>
 
-<button class="btn" id="garageBtn">
-GARAGE
-</button>
+    <button class="btn" id="garageBtn">
+      GARAGE
+    </button>
 
-<button class="btn" id="resetBtn">
-RESET SAVE
-</button>
+    <button class="btn" id="resetBtn">
+      RESET SAVE
+    </button>
 
-<div class="small">
-Made by TankEditor • Single-file V1
-</div>
+    <p class="small">
+      Made by TankEditor
+    </p>
 
-</div>
-</section>
-
-
-<!-- COUNTRY -->
-<section id="country" class="screen">
-
-<div class="card center">
-
-<div class="title">
-SELECT FACTION
-</div>
-
-<p class="small">
-Choose your starting faction.
-</p>
-
-<div class="countryGrid">
-
-<button class="country" data-country="EAGLE">
-🇺🇸<br><b>EAGLE</b>
-</button>
-
-<button class="country" data-country="BEAR">
-🇷🇺<br><b>BEAR</b>
-</button>
-
-<button class="country" data-country="LION">
-🇬🇧<br><b>LION</b>
-</button>
-
-<button class="country" data-country="FALCON">
-🇩🇪<br><b>FALCON</b>
-</button>
-
-</div>
-
-</div>
+  </div>
 </section>
 
 
 <!-- GARAGE -->
 <section id="garage" class="screen">
 
-<div class="top">
+  <div class="topbar">
 
-<button class="back" id="garageBack">
-← MENU
-</button>
+    <button class="back" id="backBtn">
+      ← MENU
+    </button>
 
-<div class="title">
-GARAGE
-</div>
+    <div class="title">
+      GARAGE
+    </div>
 
-<div class="coins">
-🪙 <span id="garageCoins">0</span>
-</div>
+    <div class="money">
+      🪙 <span id="garageCoins">0</span>
+    </div>
 
-</div>
+  </div>
 
-<div class="small" id="factionLabel"></div>
+  <div class="small" id="factionText"></div>
 
-<div class="tanks" id="tankList"></div>
+  <div class="tankGrid" id="tankGrid"></div>
 
 </section>
 
@@ -408,84 +368,50 @@ GARAGE
 <!-- BATTLE -->
 <section id="battle" class="screen">
 
-<div class="arena"></div>
+  <canvas id="gameCanvas"></canvas>
 
-<div id="hud">
+  <div id="hud">
 
-<div class="hud">
-MISSION <b id="levelText">1</b>
-</div>
+    <div class="hudBox">
+      MISSION <b id="mission">1</b>
+    </div>
 
-<div class="hud">
-🪙 <b id="battleCoins">0</b>
-</div>
+    <div class="hudBox">
+      ❤️ <b id="hpText">100</b>
+      &nbsp; 🪙 <b id="battleCoins">0</b>
+    </div>
 
-</div>
-
-
-<!-- PLAYER -->
-<div id="player"
-class="entity"
-style="left:50%;top:76%">
-
-<div class="sprite">🚜</div>
-
-<div class="hp">
-<i id="playerHp"></i>
-</div>
-
-</div>
+  </div>
 
 
-<!-- ENEMY -->
-<div id="enemy"
-class="entity enemy"
-style="left:50%;top:24%">
+  <div id="controls">
 
-<div class="sprite">🚜</div>
+    <div id="joystick">
+      <div id="stick"></div>
+    </div>
 
-<div class="hp">
-<i id="enemyHp"></i>
-</div>
+    <button id="fire">
+      FIRE<br>💥
+    </button>
 
-</div>
-
-
-<!-- CONTROLS -->
-<div id="controls">
-
-<div class="pad">
-
-<button class="up" data-move="up">▲</button>
-<button class="left" data-move="left">◀</button>
-<button class="down" data-move="down">▼</button>
-<button class="right" data-move="right">▶</button>
-
-</div>
-
-<button class="fire" id="fireBtn">
-FIRE<br>💥
-</button>
-
-</div>
+  </div>
 
 
-<!-- RESULT -->
-<div id="result" class="hidden">
+  <div id="result" class="hidden">
 
-<div class="resultTitle" id="resultTitle"></div>
+    <div class="resultTitle" id="resultTitle"></div>
 
-<p id="resultText"></p>
+    <p id="resultText"></p>
 
-<button class="btn primary" id="nextBtn">
-CONTINUE
-</button>
+    <button class="btn primary" id="continueBtn">
+      CONTINUE
+    </button>
 
-<button class="btn" id="battleMenuBtn">
-MENU
-</button>
+    <button class="btn" id="resultMenuBtn">
+      MENU
+    </button>
 
-</div>
+  </div>
 
 </section>
 
@@ -495,828 +421,1143 @@ MENU
 <script>
 "use strict";
 
+/* =========================================================
+   DATA
+========================================================= */
 
-/* =========================
-   GAME DATA
-========================= */
+const TANKS = [
 
-const tanks = [
+  {
+    id:"scout",
+    name:"SCOUT",
+    price:0,
+    hp:120,
+    damage:25,
+    speed:220,
+    reload:380,
+    armor:5,
+    scale:1
+  },
 
-{
- id:"scout",
- name:"SCOUT",
- price:0,
- hp:100,
- damage:25,
- speed:3.2,
- emoji:"🚜"
-},
+  {
+    id:"crusher",
+    name:"CRUSHER",
+    price:300,
+    hp:170,
+    damage:34,
+    speed:185,
+    reload:450,
+    armor:9,
+    scale:1.08
+  },
 
-{
- id:"crusher",
- name:"CRUSHER",
- price:250,
- hp:140,
- damage:34,
- speed:2.7,
- emoji:"🚛"
-},
+  {
+    id:"titan",
+    name:"TITAN",
+    price:750,
+    hp:240,
+    damage:48,
+    speed:155,
+    reload:520,
+    armor:14,
+    scale:1.18
+  },
 
-{
- id:"titan",
- name:"TITAN",
- price:600,
- hp:190,
- damage:45,
- speed:2.3,
- emoji:"🚜"
-},
-
-{
- id:"legend",
- name:"LEGEND",
- price:1200,
- hp:250,
- damage:60,
- speed:2.1,
- emoji:"🚀"
-}
+  {
+    id:"legend",
+    name:"LEGEND",
+    price:1500,
+    hp:320,
+    damage:65,
+    speed:145,
+    reload:600,
+    armor:20,
+    scale:1.28
+  }
 
 ];
 
 
-const defaultSave = {
+const DEFAULT_SAVE = {
 
- coins:500,
+  coins:500,
 
- level:1,
+  level:1,
 
- country:null,
+  country:null,
 
- owned:["scout"],
+  owned:["scout"],
 
- selected:"scout"
+  selected:"scout",
+
+  upgrades:{}
 
 };
 
 
 let save;
 
-let battle=null;
+let game=null;
 
-let enemyAttackTimer=null;
+let animationId=null;
 
-let enemyMoveTimer=null;
+let enemyTimer=null;
 
 
-/* =========================
-   SAVE SYSTEM
-========================= */
+/* =========================================================
+   DOM
+========================================================= */
+
+const $ = id => document.getElementById(id);
+
+const canvas=$("gameCanvas");
+
+const ctx=canvas.getContext("2d");
+
+
+/* =========================================================
+   SAVE
+========================================================= */
 
 function loadSave(){
 
- try{
+  try{
 
-  const stored =
-   localStorage.getItem("TANKEDITOR_BATTLE_V1");
+    const raw=
+      localStorage.getItem(
+        "TANKEDITOR_BATTLE_LEGENDS_V2"
+      );
 
-  if(!stored){
-   return {
-    ...defaultSave,
-    owned:["scout"]
-   };
+    if(!raw){
+
+      return {
+        ...DEFAULT_SAVE,
+        owned:["scout"],
+        upgrades:{}
+      };
+
+    }
+
+    const data=JSON.parse(raw);
+
+    return {
+
+      ...DEFAULT_SAVE,
+
+      ...data,
+
+      owned:
+        Array.isArray(data.owned)
+        ? data.owned
+        : ["scout"],
+
+      upgrades:
+        data.upgrades || {}
+
+    };
+
+  }catch(e){
+
+    return {
+      ...DEFAULT_SAVE,
+      owned:["scout"],
+      upgrades:{}
+    };
+
   }
-
-  const data=JSON.parse(stored);
-
-  return {
-
-   ...defaultSave,
-
-   ...data,
-
-   owned:
-    Array.isArray(data.owned)
-    ? data.owned
-    : ["scout"]
-
-  };
-
- }catch(error){
-
-  return {
-   ...defaultSave,
-   owned:["scout"]
-  };
-
- }
 
 }
 
 
 function saveGame(){
 
- localStorage.setItem(
-  "TANKEDITOR_BATTLE_V1",
-  JSON.stringify(save)
- );
+  localStorage.setItem(
+    "TANKEDITOR_BATTLE_LEGENDS_V2",
+    JSON.stringify(save)
+  );
 
 }
 
 
-/* =========================
-   HELPERS
-========================= */
-
-function $(id){
-
- return document.getElementById(id);
-
-}
-
+/* =========================================================
+   SCREEN
+========================================================= */
 
 function showScreen(id){
 
- document
-  .querySelectorAll(".screen")
-  .forEach(screen=>{
-   screen.classList.remove("active");
-  });
+  document
+    .querySelectorAll(".screen")
+    .forEach(s=>s.classList.remove("active"));
 
- $(id).classList.add("active");
+  $(id).classList.add("active");
 
 }
 
 
-function getSelectedTank(){
+/* =========================================================
+   TANK
+========================================================= */
 
- return tanks.find(
-  t=>t.id===save.selected
- ) || tanks[0];
+function getTank(){
 
-}
-
-
-/* =========================
-   GARAGE
-========================= */
-
-function renderGarage(){
-
- $("garageCoins").textContent =
-  save.coins;
-
- $("factionLabel").textContent =
-  save.country
-  ? "Faction: "+save.country
-  : "Faction: none";
-
-
- $("tankList").innerHTML =
- tanks.map(t=>{
-
-  const owned =
-   save.owned.includes(t.id);
-
-  const selected =
-   save.selected===t.id;
-
-  let text;
-
-  if(selected)
-   text="SELECTED";
-  else if(owned)
-   text="SELECT";
-  else
-   text="🪙 "+t.price;
-
-
-  return `
-
-  <div class="tank">
-
-   <div class="art">
-    ${t.emoji}
-   </div>
-
-   <b>${t.name}</b>
-
-   <div class="stats">
-    HP ${t.hp} •
-    DMG ${t.damage} •
-    SPD ${t.speed}
-   </div>
-
-   <button
-    data-tank="${t.id}"
-    class="${selected?"selected":owned?"owned":""}">
-    ${text}
-   </button>
-
-  </div>
-
-  `;
-
- }).join("");
-
-
- document
-  .querySelectorAll("[data-tank]")
-  .forEach(button=>{
-
-   button.onclick=()=>{
-
-    const tank=tanks.find(
-     t=>t.id===button.dataset.tank
-    );
-
-    if(!tank) return;
-
-
-    if(save.owned.includes(tank.id)){
-
-     save.selected=tank.id;
-
-     saveGame();
-
-     renderGarage();
-
-     return;
-
-    }
-
-
-    if(save.coins>=tank.price){
-
-     save.coins-=tank.price;
-
-     save.owned.push(tank.id);
-
-     save.selected=tank.id;
-
-     saveGame();
-
-     renderGarage();
-
-    }
-
-   };
-
-  });
+  return TANKS.find(
+    t=>t.id===save.selected
+  ) || TANKS[0];
 
 }
 
 
-/* =========================
-   BATTLE
-========================= */
+function getUpgradeLevel(id){
 
-function startBattle(){
-
- if(!save.country){
-
-  showScreen("country");
-
-  return;
-
- }
-
-
- const tank=getSelectedTank();
-
- const enemyHP=
-  90+(save.level*30);
-
-
- battle={
-
-  px:50,
-
-  py:76,
-
-  ex:50,
-
-  ey:24,
-
-  playerHP:tank.hp,
-
-  enemyHP:enemyHP,
-
-  enemyMaxHP:enemyHP,
-
-  dead:false,
-
-  lastShot:0
-
- };
-
-
- $("levelText").textContent=
-  save.level;
-
- $("battleCoins").textContent=
-  save.coins;
-
- $("playerHp").style.width=
-  "100%";
-
- $("enemyHp").style.width=
-  "100%";
-
- $("result").classList.add("hidden");
-
-
- showScreen("battle");
-
-
- clearInterval(enemyAttackTimer);
- clearInterval(enemyMoveTimer);
-
-
- enemyAttackTimer=
-  setInterval(enemyAttack,850);
-
- enemyMoveTimer=
-  setInterval(moveEnemy,50);
-
-
- updatePositions();
-
-}
-
-
-function updatePositions(){
-
- if(!battle) return;
-
- $("player").style.left=
-  battle.px+"%";
-
- $("player").style.top=
-  battle.py+"%";
-
- $("enemy").style.left=
-  battle.ex+"%";
-
- $("enemy").style.top=
-  battle.ey+"%";
-
-}
-
-
-/* =========================
-   PLAYER MOVEMENT
-========================= */
-
-function movePlayer(dx,dy){
-
- if(!battle || battle.dead)
-  return;
-
-
- battle.px=
-  Math.max(
-   7,
-   Math.min(93,battle.px+dx)
+  return Number(
+    save.upgrades[id] || 0
   );
 
-
- battle.py=
-  Math.max(
-   12,
-   Math.min(89,battle.py+dy)
-  );
-
-
- updatePositions();
-
 }
 
 
-/* =========================
-   FIRE
-========================= */
-
-function fire(){
-
- if(!battle || battle.dead)
-  return;
-
-
- const now=Date.now();
-
-
- if(now-battle.lastShot<400)
-  return;
-
-
- battle.lastShot=now;
-
-
- const distance=Math.hypot(
-  battle.ex-battle.px,
-  battle.ey-battle.py
- );
-
-
- if(distance>52)
-  return;
-
-
- const tank=getSelectedTank();
-
-
- battle.enemyHP=
-  Math.max(
-   0,
-   battle.enemyHP-tank.damage
-  );
-
-
- $("enemyHp").style.width=
-  (
-   battle.enemyHP/
-   battle.enemyMaxHP*
-   100
-  )+"%";
-
-
- if(battle.enemyHP<=0){
-
-  victory();
-
- }
-
-}
-
-
-/* =========================
-   ENEMY
-========================= */
-
-function moveEnemy(){
-
- if(!battle || battle.dead)
-  return;
-
-
- const dx=
-  battle.px-battle.ex;
-
- const dy=
-  battle.py-battle.ey;
-
- const distance=
-  Math.hypot(dx,dy) || 1;
-
-
- if(distance>20){
-
-  const speed=
-   .16+(save.level*.008);
-
-  battle.ex+=
-   (dx/distance)*speed;
-
-  battle.ey+=
-   (dy/distance)*speed;
-
-  battle.ex=
-   Math.max(7,Math.min(93,battle.ex));
-
-  battle.ey=
-   Math.max(12,Math.min(89,battle.ey));
-
-  updatePositions();
-
- }
-
-}
-
-
-function enemyAttack(){
-
- if(!battle || battle.dead)
-  return;
-
-
- const distance=
-  Math.hypot(
-   battle.ex-battle.px,
-   battle.ey-battle.py
-  );
-
-
- if(distance>58)
-  return;
-
-
- battle.playerHP=
-  Math.max(
-   0,
-   battle.playerHP-
-   (7+(save.level*2))
-  );
-
-
- $("playerHp").style.width=
-  (
-   battle.playerHP/
-   getSelectedTank().hp*
-   100
-  )+"%";
-
-
- if(battle.playerHP<=0){
-
-  defeat();
-
- }
-
-}
-
-
-/* =========================
-   RESULTS
-========================= */
-
-function stopBattleTimers(){
-
- clearInterval(enemyAttackTimer);
-
- clearInterval(enemyMoveTimer);
-
- enemyAttackTimer=null;
-
- enemyMoveTimer=null;
-
-}
-
-
-function victory(){
-
- if(!battle || battle.dead)
-  return;
-
-
- battle.dead=true;
-
- stopBattleTimers();
-
-
- const reward=
-  100+(save.level*35);
-
-
- save.coins+=reward;
-
- save.level++;
-
-
- saveGame();
-
-
- $("battleCoins").textContent=
-  save.coins;
-
-
- $("resultTitle").textContent=
-  "VICTORY! 🏆";
-
-
- $("resultText").textContent=
-  "Mission complete! +" +
-  reward +
-  " coins";
-
-
- $("nextBtn").textContent=
-  "NEXT MISSION";
-
-
- $("result").classList.remove(
-  "hidden"
- );
-
-}
-
-
-function defeat(){
-
- if(!battle || battle.dead)
-  return;
-
-
- battle.dead=true;
-
- stopBattleTimers();
-
-
- $("resultTitle").textContent=
-  "DEFEATED";
-
-
- $("resultText").textContent=
-  "Your tank was knocked out. Try again.";
-
-
- $("nextBtn").textContent=
-  "RETRY";
-
-
- $("result").classList.remove(
-  "hidden"
- );
-
-}
-
-
-/* =========================
-   BUTTONS
-========================= */
-
-$("playBtn").onclick=
- startBattle;
-
-
-$("garageBtn").onclick=()=>{
-
- renderGarage();
-
- showScreen("garage");
-
-};
-
-
-$("garageBack").onclick=()=>{
-
- showScreen("menu");
-
-};
-
-
-$("battleMenuBtn").onclick=()=>{
-
- stopBattleTimers();
-
- battle=null;
-
- showScreen("menu");
-
-};
-
-
-$("nextBtn").onclick=()=>{
-
- startBattle();
-
-};
-
-
-$("resetBtn").onclick=()=>{
-
- if(confirm(
-  "Reset all TANKEDITOR V1 progress?"
- )){
-
-  localStorage.removeItem(
-   "TANKEDITOR_BATTLE_V1"
-  );
-
-  save=loadSave();
-
-  renderGarage();
-
-  showScreen("menu");
-
- }
-
-};
-
-
-/* =========================
-   COUNTRY SELECTION
-========================= */
-
-document
- .querySelectorAll("[data-country]")
- .forEach(button=>{
-
-  button.onclick=()=>{
-
-   save.country=
-    button.dataset.country;
-
-   saveGame();
-
-   showScreen("menu");
+function getTankStats(tank){
+
+  const upgrade=
+    getUpgradeLevel(tank.id);
+
+  return {
+
+    hp:
+      tank.hp+
+      upgrade*18,
+
+    damage:
+      tank.damage+
+      upgrade*4,
+
+    speed:
+      tank.speed+
+      upgrade*5,
+
+    armor:
+      tank.armor+
+      upgrade*2,
+
+    reload:
+      Math.max(
+        180,
+        tank.reload-
+        upgrade*18
+      )
 
   };
 
- });
+}
 
 
-/* =========================
-   MOBILE CONTROLS
-========================= */
+/* =========================================================
+   GARAGE
+========================================================= */
 
-document
- .querySelectorAll("[data-move]")
- .forEach(button=>{
+function drawMiniTank(canvas,tank){
 
-  button.addEventListener(
-   "pointerdown",
-   event=>{
+  const c=canvas.getContext("2d");
 
-    event.preventDefault();
+  c.clearRect(0,0,canvas.width,canvas.height);
 
-    const direction=
-     button.dataset.move;
+  c.save();
 
-
-    if(direction==="up")
-     movePlayer(0,-3);
-
-    if(direction==="down")
-     movePlayer(0,3);
-
-    if(direction==="left")
-     movePlayer(-3,0);
-
-    if(direction==="right")
-     movePlayer(3,0);
-
-   }
+  c.translate(
+    canvas.width/2,
+    canvas.height/2
   );
 
- });
+  c.fillStyle="#151b1b";
+
+  c.fillRect(
+    -52,
+    -28,
+    104,
+    56
+  );
+
+  c.fillStyle="#252e2d";
+
+  c.fillRect(
+    -43,
+    -22,
+    86,
+    44
+  );
+
+  c.fillStyle="#58635d";
+
+  c.fillRect(
+    -22,
+    -19,
+    44,
+    32
+  );
+
+  c.fillStyle="#6d7770";
+
+  c.fillRect(
+    -15,
+    -15,
+    30,
+    24
+  );
+
+  c.fillStyle="#777";
+
+  c.fillRect(
+    8,
+    -5,
+    55,
+    10
+  );
+
+  c.fillStyle="#090b0b";
+
+  c.fillRect(
+    -58,
+    -30,
+    14,
+    60
+  );
+
+  c.fillRect(
+    44,
+    -30,
+    14,
+    60
+  );
+
+  c.restore();
+
+}
 
 
-$("fireBtn")
- .addEventListener(
-  "pointerdown",
-  event=>{
+function renderGarage(){
 
-   event.preventDefault();
+  $("garageCoins").textContent=
+    save.coins;
 
-   fire();
+  $("factionText").textContent=
+    save.country
+    ? "Faction: "+save.country
+    : "Faction: none";
+
+
+  $("tankGrid").innerHTML=
+    TANKS.map(t=>{
+
+      const owned=
+        save.owned.includes(t.id);
+
+      const selected=
+        save.selected===t.id;
+
+      const stats=
+        getTankStats(t);
+
+      let label;
+
+      if(selected)
+        label="SELECTED";
+      else if(owned)
+        label="SELECT";
+      else
+        label="🪙 "+t.price;
+
+
+      return `
+
+        <div class="tankCard">
+
+          <div class="tankIcon">
+            <canvas
+              width="180"
+              height="100"
+              data-mini="${t.id}">
+            </canvas>
+          </div>
+
+          <b>${t.name}</b>
+
+          <div class="tankStats">
+            HP: ${stats.hp}<br>
+            DAMAGE: ${stats.damage}<br>
+            SPEED: ${Math.round(stats.speed)}<br>
+            ARMOR: ${stats.armor}<br>
+            LEVEL: ${getUpgradeLevel(t.id)}
+          </div>
+
+          <button
+            data-tank="${t.id}"
+            class="${
+              selected
+              ?"selected"
+              :owned
+              ?"owned"
+              :""
+            }">
+
+            ${label}
+
+          </button>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+
+  TANKS.forEach(t=>{
+
+    const mini=
+      document.querySelector(
+        `[data-mini="${t.id}"]`
+      );
+
+    if(mini)
+      drawMiniTank(mini,t);
+
+  });
+
+
+  document
+    .querySelectorAll("[data-tank]")
+    .forEach(button=>{
+
+      button.onclick=()=>{
+
+        const tank=
+          TANKS.find(
+            t=>t.id===button.dataset.tank
+          );
+
+        if(!tank)return;
+
+
+        if(save.owned.includes(tank.id)){
+
+          save.selected=tank.id;
+
+          saveGame();
+
+          renderGarage();
+
+          return;
+
+        }
+
+
+        if(save.coins>=tank.price){
+
+          save.coins-=tank.price;
+
+          save.owned.push(tank.id);
+
+          save.selected=tank.id;
+
+          saveGame();
+
+          renderGarage();
+
+        }
+
+      };
+
+    });
+
+}
+
+
+/* =========================================================
+   CANVAS RESIZE
+========================================================= */
+
+function resizeCanvas(){
+
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+
+}
+
+window.addEventListener(
+  "resize",
+  resizeCanvas
+);
+
+resizeCanvas();
+
+
+/* =========================================================
+   MAP
+========================================================= */
+
+function createMap(){
+
+  const obstacles=[];
+
+  const w=canvas.width;
+  const h=canvas.height;
+
+  for(let i=0;i<10;i++){
+
+    const width=
+      60+
+      Math.random()*100;
+
+    const height=
+      35+
+      Math.random()*65;
+
+    obstacles.push({
+
+      x:
+        30+
+        Math.random()*
+        Math.max(1,w-width-60),
+
+      y:
+        80+
+        Math.random()*
+        Math.max(1,h-250),
+
+      w:width,
+
+      h:height
+
+    });
 
   }
- );
+
+  return obstacles;
+
+}
 
 
-/* =========================
-   KEYBOARD CONTROLS
-========================= */
+/* =========================================================
+   BATTLE START
+========================================================= */
 
-document.addEventListener(
- "keydown",
- event=>{
+function startBattle(){
 
-  if(!$("battle").classList.contains("active"))
-   return;
+  const tank=getTank();
 
+  const stats=getTankStats(tank);
 
-  const key=
-   event.key.toLowerCase();
+  if(!save.country){
 
+    showScreen("garage");
 
-  if(key==="w" ||
-     event.key==="ArrowUp")
-   movePlayer(0,-3);
+    return;
+
+  }
 
 
-  if(key==="s" ||
-     event.key==="ArrowDown")
-   movePlayer(0,3);
+  game={
+
+    width:canvas.width,
+
+    height:canvas.height,
+
+    player:{
+
+      x:canvas.width/2,
+
+      y:canvas.height-180,
+
+      angle:-Math.PI/2,
+
+      hp:stats.hp,
+
+      maxHp:stats.hp,
+
+      damage:stats.damage,
+
+      speed:stats.speed,
+
+      armor:stats.armor,
+
+      reload:stats.reload,
+
+      lastShot:0
+
+    },
+
+    enemy:{
+
+      x:canvas.width/2,
+
+      y:130,
+
+      angle:Math.PI/2,
+
+      hp:
+        100+
+        save.level*35,
+
+      maxHp:
+        100+
+        save.level*35,
+
+      speed:
+        75+
+        save.level*3,
+
+      lastShot:0,
+
+      reload:
+        Math.max(
+          700-
+          save.level*8,
+          360
+        )
+
+    },
+
+    bullets:[],
+
+    particles:[],
+
+    obstacles:createMap(),
+
+    keys:{},
+
+    joyX:0,
+
+    joyY:0,
+
+    over:false
+
+  };
 
 
-  if(key==="a" ||
-     event.key==="ArrowLeft")
-   movePlayer(-3,0);
+  $("mission").textContent=
+    save.level;
+
+  $("battleCoins").textContent=
+    save.coins;
+
+  $("result").classList.add(
+    "hidden"
+  );
 
 
-  if(key==="d" ||
-     event.key==="ArrowRight")
-   movePlayer(3,0);
+  showScreen("battle");
 
 
-  if(event.code==="Space")
-   fire();
+  cancelAnimationFrame(
+    animationId
+  );
 
- }
+  loop(
+    performance.now()
+  );
+
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+window.addEventListener(
+  "keydown",
+  e=>{
+
+    if(!game)return;
+
+    game.keys[e.key.toLowerCase()]=true;
+
+    if(e.code==="Space")
+      shootPlayer();
+
+  }
 );
 
 
-/* =========================
-   STARTUP
-========================= */
+window.addEventListener(
+  "keyup",
+  e=>{
 
-save=loadSave();
+    if(!game)return;
 
-renderGarage();
+    game.keys[e.key.toLowerCase()]=false;
 
-</script>
+  }
+);
 
-</body>
-  </html>
+
+/* =========================================================
+   JOYSTICK
+========================================================= */
+
+const joystick=$("joystick");
+
+const stick=$("stick");
+
+let joystickActive=false;
+
+
+function joystickMove(clientX,clientY){
+
+  const r=
+    joystick.getBoundingClientRect();
+
+  const cx=
+    r.left+r.width/2;
+
+  const cy=
+    r.top+r.height/2;
+
+  let dx=clientX-cx;
+
+  let dy=clientY-cy;
+
+  const max=r.width*.34;
+
+  const len=Math.hypot(dx,dy);
+
+  if(len>max){
+
+    dx=
+      dx/len*max;
+
+    dy=
+      dy/len*max;
+
+  }
+
+
+  stick.style.left=
+    `calc(50% + ${dx}px)`;
+
+  stick.style.top=
+    `calc(50% + ${dy}px)`;
+
+
+  if(game){
+
+    game.joyX=
+      dx/max;
+
+    game.joyY=
+      dy/max;
+
+  }
+
+}
+
+
+function joystickEnd(){
+
+  joystickActive=false;
+
+  stick.style.left="50%";
+
+  stick.style.top="50%";
+
+  if(game){
+
+    game.joyX=0;
+
+    game.joyY=0;
+
+  }
+
+}
+
+
+joystick.addEventListener(
+  "pointerdown",
+  e=>{
+
+    joystickActive=true;
+
+    joystick.setPointerCapture(
+      e.pointerId
+    );
+
+    joystickMove(
+      e.clientX,
+      e.clientY
+    );
+
+  }
+);
+
+
+joystick.addEventListener(
+  "pointermove",
+  e=>{
+
+    if(joystickActive)
+      joystickMove(
+        e.clientX,
+        e.clientY
+      );
+
+  }
+);
+
+
+joystick.addEventListener(
+  "pointerup",
+  joystickEnd
+);
+
+
+joystick.addEventListener(
+  "pointercancel",
+  joystickEnd
+);
+
+
+/* =========================================================
+   FIRE BUTTON
+========================================================= */
+
+$("fire").addEventListener(
+  "pointerdown",
+  e=>{
+
+    e.preventDefault();
+
+    shootPlayer();
+
+  }
+);
+
+
+/* =========================================================
+   MOVEMENT
+========================================================= */
+
+function movePlayer(dt){
+
+  const p=game.player;
+
+  let x=0;
+  let y=0;
+
+
+  if(game.keys["w"] ||
+     game.keys["arrowup"])
+    y-=1;
+
+  if(game.keys["s"] ||
+     game.keys["arrowdown"])
+    y+=1;
+
+  if(game.keys["a"] ||
+     game.keys["arrowleft"])
+    x-=1;
+
+  if(game.keys["d"] ||
+     game.keys["arrowright"])
+    x+=1;
+
+
+  x+=game.joyX;
+
+  y+=game.joyY;
+
+
+  const length=
+    Math.hypot(x,y);
+
+
+  if(length>1){
+
+    x/=length;
+    y/=length;
+
+  }
+
+
+  if(length>.05){
+
+    p.angle=
+      Math.atan2(y,x);
+
+    const nx=
+      p.x+
+      x*p.speed*dt;
+
+    const ny=
+      p.y+
+      y*p.speed*dt;
+
+
+    if(!collidesTank(
+      nx,
+      ny,
+      25
+    )){
+
+      p.x=nx;
+      p.y=ny;
+
+    }
+
+  }
+
+
+  p.x=
+    Math.max(
+      30,
+      Math.min(
+        canvas.width-30,
+        p.x
+      )
+    );
+
+  p.y=
+    Math.max(
+      70,
+      Math.min(
+        canvas.height-40,
+        p.y
+      )
+    );
+
+}
+
+
+/* =========================================================
+   COLLISION
+========================================================= */
+
+function collidesTank(x,y,r){
+
+  for(const o of game.obstacles){
+
+    if(
+      x+r>o.x &&
+      x-r<o.x+o.w &&
+      y+r>o.y &&
+      y-r<o.y+o.h
+    ){
+
+      return true;
+
+    }
+
+  }
+
+  return false;
+
+}
+
+
+/* =========================================================
+   SHOOTING
+========================================================= */
+
+function shootPlayer(){
+
+  if(!game || game.over)
+    return;
+
+
+  const p=game.player;
+
+  const now=performance.now();
+
+
+  if(
+    now-p.lastShot<
+    p.reload
+  )
+    return;
+
+
+  p.lastShot=now;
+
+
+  createBullet(
+
+    p.x+
+      Math.cos(p.angle)*42,
+
+    p.y+
+      Math.sin(p.angle)*42,
+
+    p.angle,
+
+    true,
+
+    p.damage
+
+  );
+
+}
+
+
+/* =========================================================
+   BULLET
+========================================================= */
+
+function createBullet(
+  x,
+  y,
+  angle,
+  player,
+  damage
+){
+
+  game.bullets.push({
+
+    x,
+
+    y,
+
+    angle,
+
+    speed:
+      player
+      ? 620
+      : 430,
+
+    player,
+
+    damage,
+
+    life:1.8
+
+  });
+
+}
+
+
+function updateBullets(dt){
+
+  for(
+    let i=game.bullets.length-1;
+    i>=0;
+    i--
+  ){
+
+    const b=game.bullets[i];
+
+    b.x+=
+      Math.cos(b.angle)*
+      b.speed*
+      dt;
+
+    b.y+=
+      Math.sin(b.angle)*
+      b.speed*
+      dt;
+
+    b.life-=dt;
+
+
+    if(b.life<=0){
+
+      game.bullets.splice(i,1);
+
+      continue;
+
+    }
+
+
+    let remove=false;
+
+
+    for(const o of game.obstacles){
+
+      if(
+        b.x>o.x &&
+        b.x<o.x+o.w &&
+        b.y>o.y &&
+        b.y<o.y+o.h
+      ){
+
+        explosion(
+          b.x,
+          b.y,
+          false
+        );
+
+        remove=true;
+
+        break;
+
+      }
+
+    }
+
+
+    if(remove){
+
+      game.bullets.splice(i,1);
+
+      continue;
+
+    }
+
+
+    if(b.player){
+
+      const e=game.enemy;
+
+      if(
+        Math.hypot(
+          b.x-e.x,
+          b.y-e.y
+        )<30
+      ){
+
+        const damage=
+          Math.max(
+            5,
+            b.damage
+          );
+
+        e.hp=
+          Math.max(
+            0,
+            e.hp-damage
+          );
+
+        explosion(
+          b.x,
+          b.y,
+          true
+        );
+
+        game.bullets.splice(i,1);
+
+        if(e.hp<=0)
+          victory();
+
+      }
+
+    }else{
+
+      const p=game.player;
+
+      if(
+        Math.hypot(
+          b.x-p.x,
+          b.y-p.y
+        )<27
+      ){
+
+        const damage=
+          Math.max(
+            4,
+            b.damage-p.armor
+          );
+
+        p.hp=
+          Math.max(
+            0,
+            p.hp-damage
+          );
+
+        explosion(
+          b.x,
+          b.y
