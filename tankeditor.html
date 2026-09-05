@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>TANKEDITOR: BATTLE LEGENDS V1</title>
+
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{
+ margin:0;width:100%;height:100%;overflow:hidden;
+ background:#060a0c;color:#fff;font-family:Arial,sans-serif;
+}
+button{font:inherit;color:inherit;border:0;cursor:pointer}
+
+.screen{
+ position:absolute;inset:0;display:none;
+}
+.screen.active{display:flex}
+
+#menu{
+ align-items:center;justify-content:center;text-align:center;
+ padding:18px;
+ background:
+ radial-gradient(circle at 50% 35%,#24383b 0,#101a1d 35%,#050809 80%);
+}
+
+.card{
+ width:min(480px,94vw);
+ padding:25px;
+ border:1px solid #405457;
+ border-radius:18px;
+ background:#0b1417ed;
+ box-shadow:0 20px 70px #000b;
+}
+
+.logo{
+ font-size:clamp(34px,8vw,64px);
+ font-weight:1000;
+ letter-spacing:2px;
+ line-height:.95;
+}
+.logo span{color:#e2b233}
+
+.sub{
+ color:#9caeb0;
+ margin:12px 0 26px;
+ letter-spacing:1px;
+}
+
+.btn{
+ width:100%;
+ padding:14px;
+ margin:6px 0;
+ border-radius:10px;
+ background:#26383b;
+ border:1px solid #43575a;
+ font-weight:900;
+}
+.btn.primary{
+ background:linear-gradient(#e8bb42,#8c6a19);
+ color:#111;
+ border-color:#f1d26a;
+}
+.btn:active,.country:active{transform:scale(.98)}
+
+.small{
+ color:#89999b;
+ font-size:12px;
+}
+
+#country,#garage{
+ padding:18px;
+ flex-direction:column;
+ background:linear-gradient(145deg,#071013,#172224);
+}
+
+.center{
+ margin:auto;
+ width:min(480px,94vw);
+}
+
+.title{
+ font-size:25px;
+ font-weight:1000;
+}
+
+.countryGrid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:10px;
+ margin-top:15px;
+}
+
+.country{
+ padding:20px;
+ border-radius:12px;
+ background:#172628;
+ border:1px solid #3c5053;
+}
+
+.top{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:8px;
+}
+
+.back{
+ padding:10px 13px;
+ border-radius:9px;
+ background:#27393c;
+}
+
+.coins{
+ padding:9px 12px;
+ border-radius:9px;
+ background:#1a292c;
+ color:#ffd54d;
+ font-weight:900;
+}
+
+.tanks{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+ gap:12px;
+ overflow:auto;
+ margin-top:15px;
+ padding-bottom:15px;
+}
+
+.tank{
+ padding:12px;
+ background:#101a1c;
+ border:1px solid #34484b;
+ border-radius:14px;
+}
+
+.art{
+ height:82px;
+ display:grid;
+ place-items:center;
+ font-size:55px;
+}
+
+.tank b{display:block}
+
+.stats{
+ color:#aab6b8;
+ font-size:12px;
+ margin:5px 0 9px;
+}
+
+.tank button{
+ width:100%;
+ padding:9px;
+ border-radius:9px;
+ background:#293c3f;
+ font-weight:800;
+}
+
+.owned{background:#315d41!important}
+.selected{background:#d9aa32!important;color:#111}
+
+/* BATTLE */
+
+#battle{
+ background:#20291f;
+ overflow:hidden;
+}
+
+.arena{
+ position:absolute;
+ inset:0;
+ background:
+ radial-gradient(circle at 20% 20%,#879178 0 2px,transparent 3px),
+ linear-gradient(#657057 0 57%,#343d30 57%);
+ background-size:36px 36px,100% 100%;
+}
+
+.arena:after{
+ content:"";
+ position:absolute;
+ inset:57% 0 0;
+ background:repeating-linear-gradient(
+  0deg,transparent 0 34px,#1d261c 35px 37px
+ );
+ opacity:.4;
+}
+
+#hud{
+ position:absolute;
+ z-index:4;
+ top:8px;
+ left:8px;
+ right:8px;
+ display:flex;
+ justify-content:space-between;
+}
+
+.hud{
+ background:#071012dd;
+ border:1px solid #435457;
+ border-radius:9px;
+ padding:8px 10px;
+ font-size:12px;
+}
+
+.entity{
+ position:absolute;
+ z-index:3;
+ transform:translate(-50%,-50%);
+ text-align:center;
+}
+
+.sprite{
+ font-size:58px;
+ filter:drop-shadow(0 8px 5px #0009);
+}
+
+.enemy .sprite{
+ filter:
+ hue-rotate(125deg)
+ saturate(1.5)
+ drop-shadow(0 8px 5px #0009);
+}
+
+.hp{
+ width:76px;
+ height:6px;
+ background:#111;
+ border-radius:5px;
+ overflow:hidden;
+ margin:auto;
+}
+
+.hp i{
+ display:block;
+ height:100%;
+ width:100%;
+ background:#4dcc68;
+}
+
+#controls{
+ position:absolute;
+ z-index:5;
+ left:12px;
+ right:12px;
+ bottom:12px;
+ display:flex;
+ justify-content:space-between;
+ align-items:end;
+}
+
+.pad{
+ display:grid;
+ grid-template-columns:52px 52px 52px;
+ grid-template-rows:52px 52px;
+ gap:5px;
+}
+
+.pad button,.fire{
+ width:52px;
+ height:52px;
+ background:#0a1315dd;
+ border:1px solid #536467;
+ border-radius:11px;
+ font-weight:900;
+}
+
+.pad .up{grid-column:2}
+.pad .left{grid-column:1;grid-row:2}
+.pad .down{grid-column:2;grid-row:2}
+.pad .right{grid-column:3;grid-row:2}
+
+.fire{
+ width:75px;
+ height:75px;
+ border-radius:50%;
+ background:#8c241d;
+ border-color:#db5b4d;
+}
+
+#result{
+ position:absolute;
+ z-index:10;
+ left:50%;
+ top:48%;
+ transform:translate(-50%,-50%);
+ width:min(380px,88vw);
+ padding:22px;
+ text-align:center;
+ border:1px solid #425356;
+ border-radius:16px;
+ background:#0c1517f5;
+ box-shadow:0 20px 50px #000b;
+}
+
+.resultTitle{
+ font-size:30px;
+ font-weight:1000;
+}
+
+.hidden{display:none!important}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+<!-- MAIN MENU -->
+<section id="menu" class="screen active">
+<div class="card">
+
+<div class="logo">
+TANKEDITOR<br>
+<span>BATTLE LEGENDS</span>
+</div>
+
+<div class="sub">
+V1 • BATTLE • UPGRADE • CONQUER
+</div>
+
+<button class="btn primary" id="playBtn">
+START BATTLE
+</button>
+
+<button class="btn" id="garageBtn">
+GARAGE
+</button>
+
+<button class="btn" id="resetBtn">
+RESET SAVE
+</button>
+
+<div class="small">
+Made by TankEditor • Single-file V1
+</div>
+
+</div>
+</section>
+
+
+<!-- COUNTRY -->
+<section id="country" class="screen">
+
+<div class="card center">
+
+<div class="title">
+SELECT FACTION
+</div>
+
+<p class="small">
+Choose your starting faction.
+</p>
+
+<div class="countryGrid">
+
+<button class="country" data-country="EAGLE">
+🇺🇸<br><b>EAGLE</b>
+</button>
+
+<button class="country" data-country="BEAR">
+🇷🇺<br><b>BEAR</b>
+</button>
+
+<button class="country" data-country="LION">
+🇬🇧<br><b>LION</b>
+</button>
+
+<button class="country" data-country="FALCON">
+🇩🇪<br><b>FALCON</b>
+</button>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- GARAGE -->
+<section id="garage" class="screen">
+
+<div class="top">
+
+<button class="back" id="garageBack">
+← MENU
+</button>
+
+<div class="title">
+GARAGE
+</div>
+
+<div class="coins">
+🪙 <span id="garageCoins">0</span>
+</div>
+
+</div>
+
+<div class="small" id="factionLabel"></div>
+
+<div class="tanks" id="tankList"></div>
+
+</section>
+
+
+<!-- BATTLE -->
+<section id="battle" class="screen">
+
+<div class="arena"></div>
+
+<div id="hud">
+
+<div class="hud">
+MISSION <b id="levelText">1</b>
+</div>
+
+<div class="hud">
+🪙 <b id="battleCoins">0</b>
+</div>
+
+</div>
+
+
+<!-- PLAYER -->
+<div id="player"
+class="entity"
+style="left:50%;top:76%">
+
+<div class="sprite">🚜</div>
+
+<div class="hp">
+<i id="playerHp"></i>
+</div>
+
+</div>
+
+
+<!-- ENEMY -->
+<div id="enemy"
+class="entity enemy"
+style="left:50%;top:24%">
+
+<div class="sprite">🚜</div>
+
+<div class="hp">
+<i id="enemyHp"></i>
+</div>
+
+</div>
+
+
+<!-- CONTROLS -->
+<div id="controls">
+
+<div class="pad">
+
+<button class="up" data-move="up">▲</button>
+<button class="left" data-move="left">◀</button>
+<button class="down" data-move="down">▼</button>
+<button class="right" data-move="right">▶</button>
+
+</div>
+
+<button class="fire" id="fireBtn">
+FIRE<br>💥
+</button>
+
+</div>
+
+
+<!-- RESULT -->
+<div id="result" class="hidden">
+
+<div class="resultTitle" id="resultTitle"></div>
+
+<p id="resultText"></p>
+
+<button class="btn primary" id="nextBtn">
+CONTINUE
+</button>
+
+<button class="btn" id="battleMenuBtn">
+MENU
+</button>
+
+</div>
+
+</section>
+
+</div>
+
+
+<script>
+"use strict";
+
+
+/* =========================
+   GAME DATA
+========================= */
+
+const tanks = [
+
+{
+ id:"scout",
+ name:"SCOUT",
+ price:0,
+ hp:100,
+ damage:25,
+ speed:3.2,
+ emoji:"🚜"
+},
+
+{
+ id:"crusher",
+ name:"CRUSHER",
+ price:250,
+ hp:140,
+ damage:34,
+ speed:2.7,
+ emoji:"🚛"
+},
+
+{
+ id:"titan",
+ name:"TITAN",
+ price:600,
+ hp:190,
+ damage:45,
+ speed:2.3,
+ emoji:"🚜"
+},
+
+{
+ id:"legend",
+ name:"LEGEND",
+ price:1200,
+ hp:250,
+ damage:60,
+ speed:2.1,
+ emoji:"🚀"
+}
+
+];
+
+
+const defaultSave = {
+
+ coins:500,
+
+ level:1,
+
+ country:null,
+
+ owned:["scout"],
+
+ selected:"scout"
+
+};
+
+
+let save;
+
+let battle=null;
+
+let enemyAttackTimer=null;
+
+let enemyMoveTimer=null;
+
+
+/* =========================
+   SAVE SYSTEM
+========================= */
+
+function loadSave(){
+
+ try{
+
+  const stored =
+   localStorage.getItem("TANKEDITOR_BATTLE_V1");
+
+  if(!stored){
+   return {
+    ...defaultSave,
+    owned:["scout"]
+   };
+  }
+
+  const data=JSON.parse(stored);
+
+  return {
+
+   ...defaultSave,
+
+   ...data,
+
+   owned:
+    Array.isArray(data.owned)
+    ? data.owned
+    : ["scout"]
+
+  };
+
+ }catch(error){
+
+  return {
+   ...defaultSave,
+   owned:["scout"]
+  };
+
+ }
+
+}
+
+
+function saveGame(){
+
+ localStorage.setItem(
+  "TANKEDITOR_BATTLE_V1",
+  JSON.stringify(save)
+ );
+
+}
+
+
+/* =========================
+   HELPERS
+========================= */
+
+function $(id){
+
+ return document.getElementById(id);
+
+}
+
+
+function showScreen(id){
+
+ document
+  .querySelectorAll(".screen")
+  .forEach(screen=>{
+   screen.classList.remove("active");
+  });
+
+ $(id).classList.add("active");
+
+}
+
+
+function getSelectedTank(){
+
+ return tanks.find(
+  t=>t.id===save.selected
+ ) || tanks[0];
+
+}
+
+
+/* =========================
+   GARAGE
+========================= */
+
+function renderGarage(){
+
+ $("garageCoins").textContent =
+  save.coins;
+
+ $("factionLabel").textContent =
+  save.country
+  ? "Faction: "+save.country
+  : "Faction: none";
+
+
+ $("tankList").innerHTML =
+ tanks.map(t=>{
+
+  const owned =
+   save.owned.includes(t.id);
+
+  const selected =
+   save.selected===t.id;
+
+  let text;
+
+  if(selected)
+   text="SELECTED";
+  else if(owned)
+   text="SELECT";
+  else
+   text="🪙 "+t.price;
+
+
+  return `
+
+  <div class="tank">
+
+   <div class="art">
+    ${t.emoji}
+   </div>
+
+   <b>${t.name}</b>
+
+   <div class="stats">
+    HP ${t.hp} •
+    DMG ${t.damage} •
+    SPD ${t.speed}
+   </div>
+
+   <button
+    data-tank="${t.id}"
+    class="${selected?"selected":owned?"owned":""}">
+    ${text}
+   </button>
+
+  </div>
+
+  `;
+
+ }).join("");
+
+
+ document
+  .querySelectorAll("[data-tank]")
+  .forEach(button=>{
+
+   button.onclick=()=>{
+
+    const tank=tanks.find(
+     t=>t.id===button.dataset.tank
+    );
+
+    if(!tank) return;
+
+
+    if(save.owned.includes(tank.id)){
+
+     save.selected=tank.id;
+
+     saveGame();
+
+     renderGarage();
+
+     return;
+
+    }
+
+
+    if(save.coins>=tank.price){
+
+     save.coins-=tank.price;
+
+     save.owned.push(tank.id);
+
+     save.selected=tank.id;
+
+     saveGame();
+
+     renderGarage();
+
+    }
+
+   };
+
+  });
+
+}
+
+
+/* =========================
+   BATTLE
+========================= */
+
+function startBattle(){
+
+ if(!save.country){
+
+  showScreen("country");
+
+  return;
+
+ }
+
+
+ const tank=getSelectedTank();
+
+ const enemyHP=
+  90+(save.level*30);
+
+
+ battle={
+
+  px:50,
+
+  py:76,
+
+  ex:50,
+
+  ey:24,
+
+  playerHP:tank.hp,
+
+  enemyHP:enemyHP,
+
+  enemyMaxHP:enemyHP,
+
+  dead:false,
+
+  lastShot:0
+
+ };
+
+
+ $("levelText").textContent=
+  save.level;
+
+ $("battleCoins").textContent=
+  save.coins;
+
+ $("playerHp").style.width=
+  "100%";
+
+ $("enemyHp").style.width=
+  "100%";
+
+ $("result").classList.add("hidden");
+
+
+ showScreen("battle");
+
+
+ clearInterval(enemyAttackTimer);
+ clearInterval(enemyMoveTimer);
+
+
+ enemyAttackTimer=
+  setInterval(enemyAttack,850);
+
+ enemyMoveTimer=
+  setInterval(moveEnemy,50);
+
+
+ updatePositions();
+
+}
+
+
+function updatePositions(){
+
+ if(!battle) return;
+
+ $("player").style.left=
+  battle.px+"%";
+
+ $("player").style.top=
+  battle.py+"%";
+
+ $("enemy").style.left=
+  battle.ex+"%";
+
+ $("enemy").style.top=
+  battle.ey+"%";
+
+}
+
+
+/* =========================
+   PLAYER MOVEMENT
+========================= */
+
+function movePlayer(dx,dy){
+
+ if(!battle || battle.dead)
+  return;
+
+
+ battle.px=
+  Math.max(
+   7,
+   Math.min(93,battle.px+dx)
+  );
+
+
+ battle.py=
+  Math.max(
+   12,
+   Math.min(89,battle.py+dy)
+  );
+
+
+ updatePositions();
+
+}
+
+
+/* =========================
+   FIRE
+========================= */
+
+function fire(){
+
+ if(!battle || battle.dead)
+  return;
+
+
+ const now=Date.now();
+
+
+ if(now-battle.lastShot<400)
+  return;
+
+
+ battle.lastShot=now;
+
+
+ const distance=Math.hypot(
+  battle.ex-battle.px,
+  battle.ey-battle.py
+ );
+
+
+ if(distance>52)
+  return;
+
+
+ const tank=getSelectedTank();
+
+
+ battle.enemyHP=
+  Math.max(
+   0,
+   battle.enemyHP-tank.damage
+  );
+
+
+ $("enemyHp").style.width=
+  (
+   battle.enemyHP/
+   battle.enemyMaxHP*
+   100
+  )+"%";
+
+
+ if(battle.enemyHP<=0){
+
+  victory();
+
+ }
+
+}
+
+
+/* =========================
+   ENEMY
+========================= */
+
+function moveEnemy(){
+
+ if(!battle || battle.dead)
+  return;
+
+
+ const dx=
+  battle.px-battle.ex;
+
+ const dy=
+  battle.py-battle.ey;
+
+ const distance=
+  Math.hypot(dx,dy) || 1;
+
+
+ if(distance>20){
+
+  const speed=
+   .16+(save.level*.008);
+
+  battle.ex+=
+   (dx/distance)*speed;
+
+  battle.ey+=
+   (dy/distance)*speed;
+
+  battle.ex=
+   Math.max(7,Math.min(93,battle.ex));
+
+  battle.ey=
+   Math.max(12,Math.min(89,battle.ey));
+
+  updatePositions();
+
+ }
+
+}
+
+
+function enemyAttack(){
+
+ if(!battle || battle.dead)
+  return;
+
+
+ const distance=
+  Math.hypot(
+   battle.ex-battle.px,
+   battle.ey-battle.py
+  );
+
+
+ if(distance>58)
+  return;
+
+
+ battle.playerHP=
+  Math.max(
+   0,
+   battle.playerHP-
+   (7+(save.level*2))
+  );
+
+
+ $("playerHp").style.width=
+  (
+   battle.playerHP/
+   getSelectedTank().hp*
+   100
+  )+"%";
+
+
+ if(battle.playerHP<=0){
+
+  defeat();
+
+ }
+
+}
+
+
+/* =========================
+   RESULTS
+========================= */
+
+function stopBattleTimers(){
+
+ clearInterval(enemyAttackTimer);
+
+ clearInterval(enemyMoveTimer);
+
+ enemyAttackTimer=null;
+
+ enemyMoveTimer=null;
+
+}
+
+
+function victory(){
+
+ if(!battle || battle.dead)
+  return;
+
+
+ battle.dead=true;
+
+ stopBattleTimers();
+
+
+ const reward=
+  100+(save.level*35);
+
+
+ save.coins+=reward;
+
+ save.level++;
+
+
+ saveGame();
+
+
+ $("battleCoins").textContent=
+  save.coins;
+
+
+ $("resultTitle").textContent=
+  "VICTORY! 🏆";
+
+
+ $("resultText").textContent=
+  "Mission complete! +" +
+  reward +
+  " coins";
+
+
+ $("nextBtn").textContent=
+  "NEXT MISSION";
+
+
+ $("result").classList.remove(
+  "hidden"
+ );
+
+}
+
+
+function defeat(){
+
+ if(!battle || battle.dead)
+  return;
+
+
+ battle.dead=true;
+
+ stopBattleTimers();
+
+
+ $("resultTitle").textContent=
+  "DEFEATED";
+
+
+ $("resultText").textContent=
+  "Your tank was knocked out. Try again.";
+
+
+ $("nextBtn").textContent=
+  "RETRY";
+
+
+ $("result").classList.remove(
+  "hidden"
+ );
+
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+$("playBtn").onclick=
+ startBattle;
+
+
+$("garageBtn").onclick=()=>{
+
+ renderGarage();
+
+ showScreen("garage");
+
+};
+
+
+$("garageBack").onclick=()=>{
+
+ showScreen("menu");
+
+};
+
+
+$("battleMenuBtn").onclick=()=>{
+
+ stopBattleTimers();
+
+ battle=null;
+
+ showScreen("menu");
+
+};
+
+
+$("nextBtn").onclick=()=>{
+
+ startBattle();
+
+};
+
+
+$("resetBtn").onclick=()=>{
+
+ if(confirm(
+  "Reset all TANKEDITOR V1 progress?"
+ )){
+
+  localStorage.removeItem(
+   "TANKEDITOR_BATTLE_V1"
+  );
+
+  save=loadSave();
+
+  renderGarage();
+
+  showScreen("menu");
+
+ }
+
+};
+
+
+/* =========================
+   COUNTRY SELECTION
+========================= */
+
+document
+ .querySelectorAll("[data-country]")
+ .forEach(button=>{
+
+  button.onclick=()=>{
+
+   save.country=
+    button.dataset.country;
+
+   saveGame();
+
+   showScreen("menu");
+
+  };
+
+ });
+
+
+/* =========================
+   MOBILE CONTROLS
+========================= */
+
+document
+ .querySelectorAll("[data-move]")
+ .forEach(button=>{
+
+  button.addEventListener(
+   "pointerdown",
+   event=>{
+
+    event.preventDefault();
+
+    const direction=
+     button.dataset.move;
+
+
+    if(direction==="up")
+     movePlayer(0,-3);
+
+    if(direction==="down")
+     movePlayer(0,3);
+
+    if(direction==="left")
+     movePlayer(-3,0);
+
+    if(direction==="right")
+     movePlayer(3,0);
+
+   }
+  );
+
+ });
+
+
+$("fireBtn")
+ .addEventListener(
+  "pointerdown",
+  event=>{
+
+   event.preventDefault();
+
+   fire();
+
+  }
+ );
+
+
+/* =========================
+   KEYBOARD CONTROLS
+========================= */
+
+document.addEventListener(
+ "keydown",
+ event=>{
+
+  if(!$("battle").classList.contains("active"))
+   return;
+
+
+  const key=
+   event.key.toLowerCase();
+
+
+  if(key==="w" ||
+     event.key==="ArrowUp")
+   movePlayer(0,-3);
+
+
+  if(key==="s" ||
+     event.key==="ArrowDown")
+   movePlayer(0,3);
+
+
+  if(key==="a" ||
+     event.key==="ArrowLeft")
+   movePlayer(-3,0);
+
+
+  if(key==="d" ||
+     event.key==="ArrowRight")
+   movePlayer(3,0);
+
+
+  if(event.code==="Space")
+   fire();
+
+ }
+);
+
+
+/* =========================
+   STARTUP
+========================= */
+
+save=loadSave();
+
+renderGarage();
+
+</script>
+
+</body>
+  </html>
